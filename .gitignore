@@ -1,0 +1,7 @@
+/*
+/*/
+!.gitignore
+!/app/
+!/skin/
+*app/etc/local.xml
+*media
