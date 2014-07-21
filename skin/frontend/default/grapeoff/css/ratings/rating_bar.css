@@ -1,0 +1,36 @@
+.rats_main_div
+{
+    float: left;
+    width: 300px;
+}
+.rats_main_div input
+{
+    border: none;
+}
+.webwidget_rating_bar{
+    padding: 0px;
+    margin: 0px;
+    float: left;
+    /*width: 140px;
+     height: 21px;*/
+    width: 145px;
+    height: 23px;
+    overflow: hidden;
+}
+.webwidget_rating_bar li{
+    line-height: 0px;
+    /*width: 25px;
+    height: 21px;*/
+    width: 27px;
+    height: 27px;
+    padding: 0px;
+    margin: 0px;
+    margin-left: 2px;
+    list-style: none;
+    float: left;
+    cursor: pointer;
+}
+.webwidget_rating_bar li div{
+    /*height: 21px;*/
+    height: 23px;
+}

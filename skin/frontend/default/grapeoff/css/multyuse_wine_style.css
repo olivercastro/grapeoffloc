@@ -1,0 +1,199 @@
+@charset "utf-8";
+/* CSS Document */
+@font-face {
+    font-family: 'open_sans_condensedbold';
+    src: url('opensans-condbold.eot');
+    src: url('opensans-condbold.eot?#iefix') format('embedded-opentype'),
+         url('opensans-condbold.woff') format('woff'),
+         url('opensans-condbold.ttf') format('truetype'),
+         url('opensans-condbold.svg#open_sans_condensedbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'open_sans_condensed_lightRg';
+    src: url('opensans-condlight.eot');
+    src: url('opensans-condlight.eot?#iefix') format('embedded-opentype'),
+         url('opensans-condlight.woff') format('woff'),
+         url('opensans-condlight.ttf') format('truetype'),
+         url('opensans-condlight.svg#open_sans_condensed_lightRg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'open_sans_condensed_lightIt';
+    src: url('opensans-condlightitalic.eot');
+    src: url('opensans-condlightitalic.eot?#iefix') format('embedded-opentype'),
+         url('opensans-condlightitalic.woff') format('woff'),
+         url('opensans-condlightitalic.ttf') format('truetype'),
+         url('opensans-condlightitalic.svg#open_sans_condensed_lightIt') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+html, body, div, ul, ol, li, dl, dt, table, td, tr, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, label, select, option {
+    margin: 0;
+    padding: 0;
+}
+body {
+    background: #fff;
+    font:14px;
+	font-family: 'open_sans_condensed_lightRg';
+    margin: 0;
+    padding: 0;
+	letter-spacing:1px;
+}
+p {
+    margin: 0;
+    padding: 0;
+}
+a {
+    color: #B906B9;
+    outline: medium none;
+    text-decoration: none;
+}
+a:hover {
+    outline: medium none;
+    text-decoration: underline;
+}
+a img {
+    border: 0 none;
+}
+img {
+    border: 0 none;
+}
+
+.clear {
+    clear: both;
+}
+.wraper {
+    margin: 0 auto;
+    width: 990px;
+
+}
+.top_stripet { width:990px; float:left; margin:25px 0 0 0; background:url(../multyuse_wine_image/header_top.png) no-repeat top transparent; height:14px;}
+.header {
+    width: 960px;
+	background:url(../green_images/hed_bot_shadow.png) repeat-x bottom;
+	float:left;
+	margin:0 15px;
+}
+.logo {
+    float: left;
+    padding: 5px 0 15px 0;
+    width: 229px;
+}
+.top_menu {
+    float: right;
+    width: 250px;
+	margin-top:30px;
+}
+.top_menu .language { float:right; color:#000; font-weight:bold; padding:10px 0;}
+.top_menu .navgation { float:right; margin:0; padding:0; width: 250px;}
+.top_menu .navgation ul { float:right; margin:0; padding:0;}
+.top_menu .navgation li { float:left; margin:0; padding:0 8px; list-style-type:none; border-right:1px solid #000;}
+.top_menu .navgation li a {
+    color: #000;
+	font-family: 'open_sans_condensedbold';
+    outline: medium none;
+    text-decoration: none;
+	font-size:14px;
+}
+.top_menu .navgation li a:hover {
+	color:#dd9a32;
+    outline: medium none;
+    text-decoration: underline;
+}
+
+.container {  width: 960px;
+	float:left;
+	margin:30px 15px;
+}
+.container .container_left { float:left; width:715px; border-right:1px solid #e7e6e6;}
+.container .container_left .buynow_div { float:left; width:150px; position:relative; background:url(../green_images/common_bottle.jpg) no-repeat transparent; min-height:422px; margin-top:20px;}
+.price_teg { width:129px; height:129px; position:absolute; left:95px;}
+.container .container_left .show_content { float:right; width:520px;}
+.container .container_left .show_content .show_price_div { width:275px; margin:0 auto;}
+.container .container_left .show_content .show_price_div h2 { font-size:26px; color:#000; font-family: 'open_sans_condensed_lightRg'; text-align:center; padding:10px 0; font-weight:bold; letter-spacing:1px; }
+.container .container_left .show_content .show_price_div .retl_disc { width:275px; float:left;}
+.container .container_left .show_content .show_price_div .retl_disc ul { width:275px; float:left; margin:10px 0; padding:0;}
+.container .container_left .show_content .show_price_div .retl_disc ul li { float:left; margin:0; padding:5px 0; list-style-type:none;}
+.container .container_left .show_content .show_price_div .retl_disc ul li.left { float:left; margin:0; padding:0; font-size:22px; color:#494949; font-family: 'open_sans_condensed_lightRg';}
+.container .container_left .show_content .show_price_div .retl_disc ul li.right { float:right; margin:0; padding:0; font-size:22px; color:#494949; font-family: 'open_sans_condensed_lightRg';}
+.bot_border { border-top:1px solid #699542;}
+.container .container_left .show_content .show_price_div .retl_disc ul li.left_a { float:left; margin:0; padding:0; font-size:22px; color:#494949; font-family: 'open_sans_condensed_lightRg'; font-weight:bold;}
+.container .container_left .show_content .show_price_div .retl_disc ul li.right_a { float:right; margin:0; padding:0; font-size:22px; color:#494949; font-family: 'open_sans_condensed_lightRg';font-weight:bold;}
+
+.show_description_div { width:520px; float:left; margin-top:30px;}
+.show_description_div h2 { font-size:26px; color:#000; font-family: 'open_sans_condensed_lightRg'; text-align:center; padding:10px 0; font-weight:bold; letter-spacing:1px; }
+.show_description_div p { font-size:14px; color:#494949; font-family: 'open_sans_condensed_lightRg'; text-align:center; padding:10px 20px; letter-spacing:1px; line-height:22px;}
+.show_description_div a {
+    color: #000;
+	font-family: 'open_sans_condensedbold';
+    outline: medium none;
+    text-decoration: none;
+	font-size:14px;
+	text-transform:uppercase;
+	float:right;
+	padding:25px 20px 15px 0;
+}
+.show_description_div a:hover {
+	color:#000;
+    outline: medium none;
+    text-decoration: underline;
+}
+
+.container .container_right { float:right; width:230px;}
+.container .container_right h2 { font-size:26px; color:#000; font-family: 'open_sans_condensed_lightRg'; text-align:left; padding:10px 0; font-weight:bold; letter-spacing:1px; margin-top:105px; }
+.container .container_right .label_full { width:224px; min-height:272px; background:url(../multyuse_wine_image/white_100_lavel.png) no-repeat transparent; margin-top:20px; }
+.container .container_right .label_mid { width:224px; min-height:272px; background:url(../multyuse_wine_image/white_50_lavel.png) no-repeat transparent; margin-top:20px; }
+.container .container_right .label_bot { width:224px; min-height:272px; background:url(../multyuse_wine_image/white_last_bottle.png) no-repeat transparent; margin-top:20px; }
+
+.footer { width: 960px;
+	border-top:1px solid #d5d5d5;
+	float:left;
+	margin:20px 15px;
+	padding:15px 0;
+}
+.footer .footer_left { float:left; margin:0; padding:0;}
+.footer .footer_left ul { float:left; margin:0; padding:0;}
+.footer .footer_left li { float:left; margin:0; padding:0 8px; list-style-type:none; border-right:1px solid #000;}
+.footer .footer_left li a {
+    color: #000;
+	font-family: Tahoma, Geneva, sans-serif;
+    outline: medium none;
+    text-decoration: none;
+	font-size:11px;
+	font-weight:bold;
+}
+.footer .footer_left li a:hover {
+	color:#dd9a32;
+    outline: medium none;
+    text-decoration: underline;
+}
+
+.footer .footer_right { float:right; margin:0; padding:0;}
+.footer .footer_right span { float:left; margin:0; padding:0 10px; width:41px; height:26px;}
+
+
+
+
+
+
+
+
+
+
+
+
