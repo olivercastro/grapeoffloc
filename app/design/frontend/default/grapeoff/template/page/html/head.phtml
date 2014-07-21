@@ -1,0 +1,203 @@
+<?php /**
+
+ * Magento
+
+ *
+
+ * NOTICE OF LICENSE
+
+ *
+
+ * This source file is subject to the Academic Free License (AFL 3.0)
+
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+
+ * It is also available through the world-wide-web at this URL:
+
+ * http://opensource.org/licenses/afl-3.0.php
+
+ * If you did not receive a copy of the license and are unable to
+
+ * obtain it through the world-wide-web, please send an email
+
+ * to license@magentocommerce.com so we can send you a copy immediately.
+
+ *
+
+ * DISCLAIMER
+
+ *
+
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+
+ * versions in the future. If you wish to customize Magento for your
+
+ * needs please refer to http://www.magentocommerce.com for more information.
+
+ *
+
+ * @category    design
+
+ * @package     base_default
+
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+ */
+
+?>
+
+<meta http-equiv="Content-Type" content="<?php echo $this->getContentType() ?>" />
+
+<title><?php echo $this->getTitle() ?> - GRAPE OFF</title>
+
+<meta name="description" content="<?php echo strip_tags($this->getDescription()) ?>" />
+
+<meta name="keywords" content="<?php echo strip_tags($this->getKeywords()) ?>" />
+
+<meta name="title" content="<?php echo strip_tags($this->getTitle()) ?>" />
+<meta property="og:title" content="<?php echo strip_tags($this->getTitle()) ?>" />
+<meta property="og:description" content="<?php echo strip_tags($this->getDescription()) ?>" />
+<meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+
+<link rel="icon" href="<?php echo $this->getFaviconFile(); ?>" type="image/x-icon" />
+
+<link rel="shortcut icon" href="<?php echo $this->getFaviconFile(); ?>" type="image/x-icon" />
+
+<script src="<?php echo $this->getSkinUrl('js/jquery-1.7.1.min.js'); ?>" type="text/javascript"></script>
+
+
+
+<!--<script src="<?php echo $this->getSkinUrl('js/cufon-yui.js'); ?>" type="text/javascript"></script>
+
+<script src="<?php echo $this->getSkinUrl('js/cufon-replace.js'); ?>" type="text/javascript"></script>
+
+<script src="<?php echo $this->getSkinUrl('js/ttf_300.font.js'); ?>" type="text/javascript"></script>
+
+<script src="<?php echo $this->getSkinUrl('js/ttf_700.font.js'); ?>" type="text/javascript"></script>-->
+
+<?php
+
+
+
+$products = Mage::getModel('catalog/product')->getCollection();
+
+//Magento does not load all attributes by default
+
+$products->addAttributeToSelect('product_type');
+
+$products->addAttributeToSelect('name');
+
+$products->addAttributeToFilter('status', array('eq' => 1));
+$products->addAttributeToFilter('home_featured',1);
+
+foreach($products as $product){
+
+$product_type=$product->getResource()->getAttribute('product_type')->getFrontend()->getValue($product);
+
+$product_id=$product->getId();
+
+break;
+
+}
+
+
+Mage::register('product_type', $product_type);
+
+Mage::register('product_id', $product_id);
+
+
+
+?>
+
+<?php
+
+switch($product_type){
+
+
+
+case White:
+
+   ?><link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/styles_green.css'); ?>" media="all" /><?php
+
+   $image_url='logo_green.png';
+
+   break;
+
+case Rose:
+
+   ?><!--<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/styles_black.css'); ?>" media="all" />-->
+   <link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/styles_rose.css'); ?>" media="all" />
+   <?php
+
+    //$image_url='logo_black.png';
+    $image_url='logo_rose.png';
+   break;
+
+
+
+   case Red:
+
+   ?><link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/styles_red.css'); ?>" media="all" /><?php
+
+    $image_url='logo_red.png';
+
+   break;
+
+case Champagne:
+
+    ?><link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/styles_orange.css'); ?>" media="all" /><?php
+
+	 $image_url='logo_orange.png';
+
+   break;
+
+
+
+   default:
+
+  ?><link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/styles_green.css'); ?>" media="all" /><?php
+
+   $image_url='logo_green.png';
+
+   break;
+
+
+
+
+
+
+
+}
+
+
+
+ ?>
+
+
+
+<!--[if lt IE 7]>
+
+<script type="text/javascript">
+
+//<![CDATA[
+
+    var BLANK_URL = '<?php echo $this->helper('core/js')->getJsUrl('blank.html') ?>';
+
+    var BLANK_IMG = '<?php echo $this->helper('core/js')->getJsUrl('spacer.gif') ?>';
+
+//]]>
+
+</script>
+
+<![endif]-->
+
+<?php echo $this->getCssJsHtml() ?>
+
+<?php echo $this->getChildHtml() ?>
+
+<?php echo $this->helper('core/js')->getTranslatorScript() ?>
+
+<?php echo $this->getIncludes() ?>
+

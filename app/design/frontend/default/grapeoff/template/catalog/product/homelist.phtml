@@ -1,0 +1,507 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Product list template
+ *
+ * @see Mage_Catalog_Block_Product_List
+ */
+?>
+<?php
+    //$_productCollection=$this->getLoadedProductCollection();
+            $_productCollection = clone $this->getLoadedProductCollection();
+            $_productCollection->clear();
+            $_productCollection->getSelect()->reset(Zend_Db_Select::ORDER);
+            $_productCollection->addStoreFilter();
+            $_productCollection->addAttributeToFilter('status',1);
+            $_productCollection->addAttributeToFilter('home_featured',1);
+            
+            $_productCollection->setPage(1,1);
+    $_helper = $this->helper('catalog/output');
+   // echo "count=".count($_productCollection);
+   //echo "<pre>";
+  //print_r($_productCollection);
+  // echo "</pre>";
+  // echo $_productCollection[2][0]['entity_id'];
+?>
+
+<?php if(!$_productCollection->count()): ?>
+<?php  $orders = Mage::getModel('sales/order')->getCollection()
+     ->setOrder('created_at','DESC')
+     ->setPageSize(1);
+     //->setCurPage(1);
+
+$orderId = $orders->getFirstItem()->getEntityId();
+
+$get_pid="select product_id from sales_flat_order_item where order_id='".$orderId."'"; 
+$data_pid=Mage::getSingleton('core/resource')->getConnection('core_read')->fetchRow($get_pid);
+
+$model = Mage::getModel('catalog/product'); //getting product model
+ 
+$_product = $model->load($data_pid['product_id']); //getting product object for particular product id
+ 
+ /*$_product->getShortDescription(); //product's short description
+ $_product->getDescription(); // product's long description
+ $_product->getName(); //product name
+ $_product->getPrice(); //product's regular Price
+ $_product->getSpecialPrice(); //product's special Price
+echo $_product->getProductUrl(); //product url
+echo $_product->getImageUrl(); //product's image url
+echo $_product->getSmallImageUrl(); //product's small image url
+echo $_product->getThumbnailUrl();*/   
+?>
+<!-- <p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p> -->
+ <?php $product_type =Mage::registry('product_type');
+switch($product_type){
+case White:
+   $buy_now_url='images/green_images/buy_green.png';
+   $sold_out_url='images/soldout_img.png';
+   break;
+case Rose:
+   /*$buy_now_url='images/green_images/buy_black.png';
+   $sold_out_url='images/soldout_img_black.png';*/
+   $buy_now_url='images/green_images/buy_rose.png';
+   $sold_out_url='images/soldout_img_rose.png';
+   break;
+
+   case Red:
+   $buy_now_url='images/green_images/buy_red.png';
+   $sold_out_url='images/soldout_img_red.png';
+   break;
+case Champagne:
+   $buy_now_url='images/green_images/buy_orange.png';
+   $sold_out_url='images/soldout_img_orange.png';
+   break;
+
+   default:    
+   $buy_now_url='images/green_images/buy_green.png';
+   $sold_out_url='images/soldout_img.png';
+   break;
+   }
+
+ ?>
+<style>
+    .scrollup{
+    width:40px;
+    height:40px;
+    opacity:0.9;
+    position:fixed;
+    /*bottom:50px;
+    right:100px;*/
+    display:none;
+    text-indent:-9999px;
+
+}
+</style>
+<script>
+ /*$('document').ready(function() {
+   $(window).scrollTop(0);
+});*/
+	/*$(document).ready(function(){
+    $(window).scroll(function(){
+        if ($(this).scrollTop() > 100) {
+            //$('#buy_btn_home').fadeIn();
+            $('#buy_btn_home')..addClass("scrollup")
+        } else {
+            $('#buy_btn_home').fadeOut();
+        }
+    })});*/
+    
+</script>
+<div class="category-products">
+<div class="container">
+<div class="container_left">
+        	<div class="buynow_div">				
+				<!--<img src="<?php //echo $this->helper('catalog/image')->init($_product, 'small_image')->constrainOnly(TRUE)->keepAspectRatio(FALSE)->keepFrame(TRUE); ?>" width="116" height="402" alt="<?php //echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" border="0"  />-->
+				<?php
+						$_img = '<img id="image" src="'.$this->helper('catalog/image')->init($_product, 'small_image')->resize(200,402).'" alt="'.$this->htmlEscape($this->getImageLabel()).'" title="'.$this->htmlEscape($this->getImageLabel()).'" />';
+						echo $_helper->productAttribute($_product, $_img, 'image');
+				?>
+				
+				
+            	<div class="price_teg dfd"><img src="<?php echo $this->getSkinUrl($sold_out_url); ?>" alt="" border="0"  /></div>
+            </div>
+            <div class="show_content">
+            	<div class="show_price_div">
+                	<h2><?php echo $_product->getName(); ?></h2>
+                    <div class="retl_disc">
+                    	<ul>
+                        	<li class="left">Suggested Retail Price</li>
+                            <li class="right"><?php echo "&yen;".$_product->getPrice(); ?></li>
+                        </ul>
+                        <ul>
+                        	<li class="left">Discount</li>
+                            <li class="right"><?php echo "&yen;".($_product->getPrice())-($_product->getSpecialPrice()); ?></li>
+                        </ul>
+                        <ul class="bot_border">
+                        	<li class="left_a">Grape Off Price</li>
+                            <li class="right_a"><?php echo "&yen;".$_product->getSpecialPrice(); ?></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <div class="show_description_div">
+                	<!--<h2>Interesting Story about the Wine on sale</h2>-->
+					<div class="show_desc_helper">
+						<?php echo $_product->getShortDescription(); ?>
+					</div>
+                    <div class="clear"></div>
+                    <span><a href="">Read More...</a></span>
+                </div>
+            </div>
+        </div>
+        <div class="container_right">
+        	<h2>Stock Remaining</h2>
+            <div class="label_bot"></div>
+        </div>
+</div>
+</div>
+<?php else: ?>
+<div class="category-products">
+    <?php //echo $this->getToolbarHtml() ?>
+
+    <?php // List mode ?>
+    <?php if($this->getMode()!='grid'): ?>
+    <?php $_iterator = 0; ?>
+    <ol class="products-list" id="products-list">
+	<?php 
+	foreach($_productCollection as $_new_product){
+		$category_id=$_new_product->getCategoryIds();
+	}	
+	$category_id=$category_id[0];
+	
+	 $catagory_model = Mage::getModel('catalog/category')->load($category_id); //where $category_id is the id of the category
+ 
+    $collection = Mage::getResourceModel('catalog/product_collection');
+ 
+    $collection->addCategoryFilter($catagory_model); //category filter
+ 
+    $collection->addAttributeToFilter('status',1); //only enabled product
+ 
+    $collection->addAttributeToSelect('*'); //add product attribute to be fetched
+ 
+    //$collection->getSelect()->order('rand()'); //uncomment to get products in random order     
+ 
+    $collection->addStoreFilter();          
+ 
+    if(!empty($collection))
+ 
+    {
+	foreach($collection as $product){
+	$product_array[]=$product->getId();
+	}	
+	}	
+   ?>
+    <?php 
+    foreach ($_productCollection as $_product): 
+	$current_id=$_product->getId();
+	?>
+	<?php   
+	foreach($product_array as $new_prodct_array){
+	
+	        $sql = "SELECT * FROM catalog_product_reminder WHERE product_id='".$new_prodct_array."'";
+			$data = Mage::getSingleton('core/resource') ->getConnection('core_read')->fetchAll($sql);
+			if(count($data)){
+			if($new_prodct_array!=$current_id){
+			$write = Mage::getSingleton('core/resource')->getConnection('core_write');
+            $write->query("update catalog_product_reminder set email_status='0' where product_id='$new_prodct_array'");		
+               }	
+			}
+			else{
+			 $write = Mage::getSingleton('core/resource')->getConnection('core_write');
+             $write->query("insert into catalog_product_reminder values('','$new_prodct_array','0')");
+		}
+	
+	}		
+			?>
+			<?php 
+			$sql1 = "SELECT * FROM catalog_product_reminder WHERE product_id='".$current_id."'";
+			$data1 = Mage::getSingleton('core/resource') ->getConnection('core_read')->fetchAll($sql1);
+			if(isset($current_id) && $data1[0]['email_status']=='0'){
+			$write = Mage::getSingleton('core/resource')->getConnection('core_write');
+            $write->query("update catalog_product_reminder set email_status='1' where product_id='$current_id'");
+		     ?>
+			 <?php
+			 $sql2 = "SELECT emailid FROM grapoff_sign_alerts where status=1";
+			 $data2 = Mage::getSingleton('core/resource') ->getConnection('core_read')->fetchAll($sql2);
+			 foreach($data2 as $value){
+			  //var_dump($value['emailid']);
+			   $body='New Product Alert :<br>			      
+				  <h1>'.$_product->getName().'</h1><br>
+				   <h3>Interesting Story about the Wine on sale</h3>
+                    <p>'.$_helper->productAttribute($_product, $_product->getShortDescription(), "short_description").'</p><br>
+				   --------------------------------------<br>
+				   Grapeoff.com
+			       ';
+					$mail = Mage::getModel('core/email');
+					$mail->setToName('Admin');
+					$mail->setToEmail($value['emailid']);
+					$mail->setBody($body);
+					$mail->setSubject('New product alert');
+					$mail->setFromEmail(Mage::getStoreConfig('trans_email/ident_general/email'));
+					$mail->setFromName("New Product Alert");
+					$mail->setType('html');// YOu can use Html or text as Mail format
+					try {
+					//$mail->send();
+					}
+					catch (Exception $e) {				
+					}
+			 }
+			 
+			 $sql3 = "SELECT email FROM  grapeoff_alerts where status=1";
+			 $data3 = Mage::getSingleton('core/resource') ->getConnection('core_read')->fetchAll($sql3);
+			foreach($data3 as $value){
+			// var_dump($value['email']);
+			  $body='New Product Alert :<br>
+			       <h1>'.$_product->getName().'</h1><br>
+				   <h3>Interesting Story about the Wine on sale</h3>
+                    <p>'.$_helper->productAttribute($_product, $_product->getShortDescription(), "short_description").'</p><br>
+				   --------------------------------------<br>
+				   Grapeoff.com
+			       ';
+					$mail = Mage::getModel('core/email');
+					$mail->setToName('Admin');
+					$mail->setToEmail($value['email']);
+					$mail->setBody($body);
+					$mail->setSubject('New product alert');
+					$mail->setFromEmail(Mage::getStoreConfig('trans_email/ident_general/email'));
+					$mail->setFromName("New Product Alert");
+					$mail->setType('html');// YOu can use Html or text as Mail format
+					try {
+					//$mail->send();
+					}
+					catch (Exception $e) {				
+					}
+			 }
+			
+			      
+               ?>
+		<?php 	} ?>	
+   <?php $qtyStock = Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product)->getQty(); ?>
+     <div class="container">
+    	<div class="container_left">
+        	<div class="buynow_div">
+				<?php if($qtyStock==0): ?>
+					<div class="block-soldout"></div>
+				<?php endif; ?>
+			<!--<img src="<?php //echo $this->helper('catalog/image')->init($_product, 'small_image')->constrainOnly(TRUE)->keepAspectRatio(FALSE)->keepFrame(TRUE); ?>" width="116" height="402" alt="<?php //echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" border="0"  />-->
+				<img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(200,402)?>"  alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" border="0"  />
+				
+				<?php
+					//$_img = '<img id="image" src="'.$this->helper('catalog/image')->init($_product, 'image')->keepAspectRatio(true).'" alt="" title="" />';
+					//echo $_helper->productAttribute($_product, $_img, 'image');
+					//$varMe=$this->helper('catalog/image')->init($_product, 'image');
+					//print_r($varMe);
+				?>
+
+				
+			
+				<!--<img style="width:150px; height:490px; margin-left:25px;" src="<?php //echo $this->helper('catalog/image')->init($_product, 'small_image')->constrainOnly(TRUE)->keepAspectRatio(FALSE)->keepFrame(FALSE); ?>" alt="<?php //echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" border="0" />-->
+		<?php
+			$session=Mage::getSingleton('customer/session', array('name'=>'frontend') );
+			$c_custid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+			$query_c="select typecust from customer_entity where entity_id='".$c_custid."'";
+			$cdetails=Mage::getSingleton('core/resource') ->getConnection('core_read')->fetchRow($query_c);
+
+		?>
+        <div class="price_teg" id="buy_btn_home">
+		<?php if($_product->isSaleable()): ?>
+			<?php $product_type =Mage::registry('product_type');
+					switch($product_type){
+					case White:
+					   $buy_now_url='images/green_images/buy_green.png';
+					   $sold_out_url='images/soldout_img.png';
+					   break;
+					case Rose:
+					   /*$buy_now_url='images/green_images/buy_black.png';
+					   $sold_out_url='images/soldout_img_black.png';*/
+					 $buy_now_url='images/green_images/buy_rose.png';
+					   $sold_out_url='images/soldout_img_rose.png';
+					   break;
+
+					   case Red:
+					   $buy_now_url='images/green_images/buy_red.png';
+					   $sold_out_url='images/soldout_img_red.png';
+					   break;
+					case Champagne:
+					   $buy_now_url='images/green_images/buy_orange.png';
+					   $sold_out_url='images/soldout_img_orange.png';
+					   break;
+
+					   default:    
+					   $buy_now_url='images/green_images/buy_green.png';
+					   $sold_out_url='images/soldout_img.png';
+					   break;
+					   }
+			?>
+			<div style="clear:both"></div>
+			<?php if ($session->isLoggedIn()): ?>
+				<?php if($cdetails['typecust']==1): ?>			 
+					<button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="alert('Vendor is not allowed to purchase the product!');"><img src="<?php echo $this->getSkinUrl($buy_now_url); ?>" alt="" border="0"  />
+					</button>
+				<?php else: ?>
+					<button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><img src="<?php echo $this->getSkinUrl($buy_now_url); ?>" alt="" border="0"  /></button>
+				<?php endif; ?>
+			<?php else:?>			
+				<!--<button type="button" title="<?php //echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php //echo $this->getUrl('customer/account/login') ?>?sv=<?php //echo $this->getAddToCartUrl($_product) ?>')">
+					<img src="<?php //echo $this->getSkinUrl($buy_now_url); ?>" alt="" border="0"  />
+				</button>-->
+				<button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')">
+					<img src="<?php echo $this->getSkinUrl($buy_now_url); ?>" alt="" border="0"  />
+				</button>
+			<?php endif; ?>
+		<?php else: ?>
+			<!--<img src="<?php //echo $this->getSkinUrl($sold_out_url); ?>" alt="" border="0"  />-->
+		<?php endif; ?>			
+		</div>
+			
+            </div>
+            <div class="show_content">
+            	<div class="show_price_div">
+                	<h2><?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></h2>
+                    <div class="retl_disc">
+                    	<ul>
+                        	<li class="left">Suggested Retail price</li>
+                            <li class="right"><?php echo $formattedPrice = Mage::helper('core')->currency($_product->getPrice(),true,false); ?></li>
+                        </ul>
+			  <?php 
+			  if($_product->getSpecialPrice()){
+			  $discount=($_product->getPrice() - $_product->getSpecialPrice());
+			 
+			  $discount= ( $discount/$_product->getPrice())*100;
+			  
+			  $grapeoff_price=$_product->getSpecialPrice();
+			  }
+			  else{
+			  $discount=0;
+			  $grapeoff_price=$_product->getPrice();
+			  }
+			  ?>
+                        <ul>
+                        	<li class="left">Discount</li>
+                            <li class="right"><?php echo round($discount).'%'; ?></li>
+                        </ul>
+						
+                        <ul class="bot_border">
+                        	<li class="left_a">Grape Off Price</li>
+                            <li class="right_a"><?php echo Mage::helper('core')->currency($fprice=round($grapeoff_price),true,false); ?></li>
+							<li style="clear:both"></li>
+							<?php $sfprice=($fprice*.08)+$fprice; ?>								
+							<li class="left_a" style="font-weight:normal; font-size:18px; padding-top:5px">
+								(tax included <?php echo Mage::helper('core')->currency(round($sfprice),true,false); ?>	)								
+							</li>
+							<li class="right_a" style="font-weight:normal; font-size:18px">
+														
+							</li>
+							<li style="font-size:12px">Free Shipping with the purchase of 4 bottles or more -an additional 10% Case Discount with the purchase of 12 bottles or more</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <div class="homelist-rating"><?php echo $this->getReviewsSummaryHtml($_product, false, true)?></div>
+                <div class="show_description_div">
+                	<!--<h2>Interesting Story about the Wine on sale</h2>-->
+                        <?php
+                        //print_r("<pre>");
+                        //print_r($_product->entity_id);
+                        ?>
+					<div class="show_desc_helper">
+						<?php echo $_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description') ?>
+					</div>
+                    <div class="clear"></div>
+                     <span><a href="<?php echo $_product->getProductUrl() ?>">Read More...</a></span>
+                     <a href="/review/product/list/id/<?php echo $_product->entity_id; ?>/#review-form">Write a review</a>
+                </div>
+            </div>
+        </div>
+        <div class="container_right">
+        	<h2>Stock Remaining</h2>
+		<?php //$sql = "SELECT ini_qty FROM cataloginventory_stock_item WHERE product_id='".$_product->entity_id."'";
+			//$data = Mage::getSingleton('core/resource') ->getConnection('core_read')->fetchAll($sql);
+		$data_inqty= Mage::getResourceModel('catalog/product')->getAttributeRawValue($_product->getId(), 'initial_qty', 1);
+                //echo $data_inqty.$qtyStock;
+		$cal=($qtyStock/$data_inqty)*100;
+		if($cal>=75) {
+		?>
+            <div class="label_full"></div>
+	    <?php } elseif($cal>=25 && $cal<75) { ?>
+	     <div class="label_mid"></div>
+	     <?php } else { ?>
+	      <div class="label_bot"></div>
+	      <?php } ?>
+        </div>
+    </div>
+        
+    <?php endforeach; ?>
+    </ol>
+    <script type="text/javascript">decorateList('products-list', 'none-recursive')</script>
+
+    <?php else: ?>
+
+    <?php // Grid Mode ?>
+
+    <?php $_collectionSize = $_productCollection->count() ?>
+    <?php $_columnCount = $this->getColumnCount(); ?>
+    <?php $i=0; foreach ($_productCollection as $_product): ?>
+        <?php if ($i++%$_columnCount==0): ?>
+        <ul class="products-grid">
+        <?php endif ?>
+            <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>">
+                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(135); ?>" width="135" height="135" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+                <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+                <?php if($_product->getRatingSummary()): ?>
+                <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+                <?php endif; ?>
+                <?php echo $this->getPriceHtml($_product, true) ?>
+                <div class="actions">
+                    <?php if($_product->isSaleable()): ?>
+                        <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                    <?php else: ?>
+                       <img src="<?php echo $this->getSkinUrl('images/soldout_img.png'); ?>" alt="" border="0"  />
+                    <?php endif; ?>
+                    <ul class="add-to-links">
+                        <?php if ($this->helper('wishlist')->isAllow()) : ?>
+                            <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+                        <?php endif; ?>
+                        <?php if($_compareUrl=$this->getAddToCompareUrl($_product)): ?>
+                            <li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </li>
+        <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+        </ul>
+        <?php endif ?>
+        <?php endforeach ?>
+        <script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+    <?php endif; ?>
+
+    <div class="toolbar-bottom">
+        <?php //echo $this->getToolbarHtml() ?>
+    </div>
+</div>
+<?php endif; ?>

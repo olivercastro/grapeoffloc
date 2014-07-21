@@ -1,0 +1,144 @@
+<?php	
+if(isset($_REQUEST['sub_share']))
+{
+	//echo "first name=".$_REQUEST['fname']; die();
+
+	$connection = Mage::getSingleton('core/resource')
+	->getConnection('core_write');
+	$connection->beginTransaction();
+	$custid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+	$custmail=Mage::getSingleton('customer/session')->getCustomer()->getEmail();
+	$fields = array();
+	$fields['friend_email']=$_REQUEST['femail'];
+	$fields['note']=$_REQUEST['txtsnote'];
+	$fields['customer_id']=$custid;
+	$connection->insert('share_to_friends', $fields);
+	$connection->commit();
+	
+	$to=$_REQUEST['femail'];
+	$sub='Share this service with a friend';
+	$siteurl=$this->getUrl();
+	$msg='Hi,Thought I would share this good value wine site with you,'. "\r\n";
+	$msg.='Site Url: '.$siteurl. "\r\n";
+	$headers = 'MIME-Version: 1.0' . "\r\n";
+	$headers.= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+	$headers .= 'From: '.$custmail."\r\n";
+	mail($to,$sub,$msg,$headers);
+	$url = $this->getUrl('customer/account');
+	Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+}
+?>
+
+<div class="alert_text">
+<h2>Order Status and Amount Calculation</h2>
+</div>
+<div class="clear">&nbsp;</div>
+<?php
+	$cid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+	$query="select * from  catalog_product_entity  where cust_id='".$cid."'";
+	$orderdata=Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($query);
+?>
+<div class="gridbody">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr class="hdrow">
+     <!-- <td class="hdrow_colone">S. No</td> -->
+    <td class="hdrow_colone">Transaction Number</td>
+    <td class="hdrow_coltwo">Product Name</td>
+      <td class="hdrow_colthree">Product Retail Price</td>
+      <td class="hdrow_colthree">Product Sale Price</td>
+       <td class="hdrow_colfour">Qty. Ordered</td>
+        <td class="hdrow_colfive">Customer</td>
+	<td class="hdrow_colfive">Status</td>
+	<td class="hdrow_colfive">Total Sale</td>
+	<td class="hdrow_colfive">Amount to Vendor</td>
+  </tr>
+  <?php $tot=0; $totsale=0; $totqty=0; $i=0; while($i<count($orderdata)) { 
+	if($i%2==0)
+	{
+		$class="controw";
+	} else {
+		$class="controw_wh";
+	}
+  ?>
+
+  <?php $query_prod="SELECT sales_flat_order_item.*, sales_flat_order.* FROM sales_flat_order_item, sales_flat_order WHERE sales_flat_order_item.order_id= sales_flat_order.entity_id and sales_flat_order_item.product_id='".$orderdata[$i]['entity_id']."' order by sales_flat_order.created_at desc";
+	//$query_prod="select * from  sales_flat_order_item where product_id='".$orderdata[$i]['entity_id']."'";
+	$proddata=Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($query_prod);
+	
+	$j=0;
+	foreach($proddata as $pr) {
+	//print_r($pr);
+	$product= Mage::getModel('catalog/product')->load($pr['product_id']);
+	$price = $product->getPrice();
+ $webprice = $product->getwebprice();
+ $specialprice = $product->getFinalPrice();
+ $sku=$product->getSku();
+ $prqty=$pr['qty_ordered']*$specialprice;
+ $perc=$prqty*(10/100);
+ $amt_to_vendor=number_format($amt_to_vendor,2);
+ $amt_to_vendor=$prqty-$perc;
+ $tot=$tot + $amt_to_vendor;
+ $totsale=$totsale+$prqty;
+ $totqty=$totqty+$pr['qty_ordered'];
+ //echo number_format($price,2);
+// echo number_format($specialprice,2);
+$csymb=Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol();  
+  ?>
+   <tr class="<?php //echo $class; ?>">
+  <!-- <td class="controw_colone"><?php echo $pr['entity_id']; ?></td> -->
+     <td class="controw_colone"><?php echo $sku; ?></td>
+    <td class="controw_coltwo"><?php echo $pr['name']; ?></td>
+    <td class="controw_colthree"><?php echo $csymb."".number_format($price,2); ?></td>
+     <td class="controw_colthree"><?php echo $csymb."".number_format($specialprice,2); ?></td>
+     <td class="controw_colthree"><?php echo round($pr['qty_ordered']); ?></td>
+      <td class="controw_colthree"><?php echo $pr['customer_firstname']; ?></td>
+      <td class="controw_colthree"><?php echo $pr['status']; ?></td>
+      <td class="controw_colthree"><?php echo $csymb."".$prqty; ?></td>
+       <td class="controw_colthree"><?php echo $csymb."".number_format($amt_to_vendor,2); ?></td>
+  </tr>
+  <?php $j++; } $i++; } ?>
+   <!-- <tr class="controw_wh">
+    <td class="controw_colone">City</td>
+    <td class="controw_coltwo">Station</td>
+    <td class="controw_colthree">Affiliate</td>
+    <td class="controw_colfour">Day</td>
+    <td class="controw_colfive">Time</td>
+  </tr> -->
+</table>
+ 
+<div class="clear"></div>
+<div style="float:left;margin-top:10px;margin-left:10px;"><h2>Total Ordered= <?php echo $totqty; ?></h2><br/><input type="button" value="Back" onclick="history.go(-1)" style=" background: none repeat scroll 0 0 transparent;
+    border: medium none;color: #699542;cursor: pointer;margin: 0;padding: 0; text-decoration: underline;" /></div>
+<div style="float:right; margin-top:10px;"><h2>Total Sale= <?php echo $csymb." ".$totsale; ?></h2><br/><h2>Total Amount= <?php echo $csymb." ".$tot; ?></h2></div>
+</div>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+	jQuery('#sub_share').click(function() { 
+	var note=jQuery('#txtsnote').val();
+	var email=jQuery('#femail').val();
+	
+	var msg='';
+	if(email=='')
+	{
+		msg='Please enter email address';
+		 msg+="\r\n";
+	}
+	
+	if(note=='')
+	{
+		msg+='Please enter short note';
+		//return false;
+	}
+	//alert('final='+msg);
+	if(msg!='')
+	{
+		alert(msg);
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	})
+	});
+</script>

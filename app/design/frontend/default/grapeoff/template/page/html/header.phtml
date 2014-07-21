@@ -1,0 +1,382 @@
+﻿<?php
+
+/**
+
+ * Magento
+
+ *
+
+ * NOTICE OF LICENSE
+
+ *
+
+ * This source file is subject to the Academic Free License (AFL 3.0)
+
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+
+ * It is also available through the world-wide-web at this URL:
+
+ * http://opensource.org/licenses/afl-3.0.php
+
+ * If you did not receive a copy of the license and are unable to
+
+ * obtain it through the world-wide-web, please send an email
+
+ * to license@magentocommerce.com so we can send you a copy immediately.
+
+ *
+
+ * DISCLAIMER
+
+ *
+
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+
+ * versions in the future. If you wish to customize Magento for your
+
+ * needs please refer to http://www.magentocommerce.com for more information.
+
+ *
+
+ * @category    design
+
+ * @package     base_default
+
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+ */
+
+/**
+
+ * @var Mage_Page_Block_Html_Header $this
+
+ */
+
+?>
+
+
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('colorbox/colorbox.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/globalme.css'); ?>"/>
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('colorbox/jquery.colorbox.js'); ?>"></script>
+
+<script>
+
+			jQuery(document).ready(function(){
+
+				//Examples of how to assign the ColorBox event to elements
+
+				jQuery(".group1").colorbox({rel:'group1'});
+
+				jQuery(".group2").colorbox({rel:'group2', transition:"fade"});
+
+				jQuery(".group3").colorbox({rel:'group3', transition:"none", width:"75%", height:"75%"});
+
+				jQuery(".group4").colorbox({rel:'group4', slideshow:true});
+
+				jQuery(".ajax").colorbox();
+
+				jQuery(".youtube").colorbox({iframe:true, innerWidth:425, innerHeight:344});
+
+				jQuery(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
+
+				jQuery(".inline").colorbox({inline:true, width:"50%"});
+
+				jQuery(".callbacks").colorbox({
+
+					onOpen:function(){ alert('onOpen: colorbox is about to open'); },
+
+					onLoad:function(){ alert('onLoad: colorbox has started to load the targeted content'); },
+
+					onComplete:function(){ alert('onComplete: colorbox has displayed the loaded content'); },
+
+					onCleanup:function(){ alert('onCleanup: colorbox has begun the close process'); },
+
+					onClosed:function(){ alert('onClosed: colorbox has completely closed'); }
+
+				});
+
+
+
+				//Example of preserving a JavaScript event for inline calls.
+
+				jQuery("#click").click(function(){
+
+					jQuery('#click').css({"background-color":"#f00", "color":"#fff", "cursor":"inherit"}).text("Open this window again and this message will still be here.");
+
+					return false;
+
+				});
+
+			});
+
+		</script>
+
+<div class="header-container">
+
+    <div class="header">
+
+	<div class="logo">
+<!-- jitendra 6-8 -->
+	<?php $product_type =Mage::registry('product_type'); ?>
+
+                            <?php
+
+                            switch($product_type){
+
+
+
+                            case White:
+
+                               $image_url='images/green_images/logo_green.png';
+
+                               break;
+
+                            case Rose:
+
+                               //$image_url='images/green_images/logo_black.png';
+                                $image_url='images/green_images/logo_rose.png';
+
+                               break;
+
+
+
+                               case Red:
+
+                               $image_url='images/green_images/logo_red.png';
+
+                               break;
+
+                            case Champagne:
+
+                               $image_url='images/green_images/logo_orange.png';
+
+                               break;
+
+
+
+                               default:
+
+                               $image_url='images/green_images/logo_green.png';
+
+                               break;
+
+                            }
+
+                             ?>
+        <?php if ($this->getIsHomePage()):?>
+        <a href="<?php echo $this->getUrl('') ?>" title="<?php echo 'GRAPE OFF' ?>" class="logo" >
+            <!-- <img src="<?php echo $this->getSkinUrl($image_url) ?>" alt="<?php echo 'GRAPE OFF' ?>"  style="visibility:hidden" />--></a>
+        <?php else:?>
+        <a href="<?php echo $this->getUrl('') ?>" title="<?php echo 'GRAPE OFF' ?>" class="logo">
+            <!--<img src="<?php echo $this->getSkinUrl($image_url) ?>" alt="<?php echo 'GRAPE OFF' ?>" style="visibility:hidden" /> --></a>
+        <?php endif?>
+
+	 </div>
+
+	 <div class="top_menu">
+
+		<span class="language"><a href="http://www.grapeoff.jp"> 日本語 </a> <?php //echo $this->getChildHtml('store_language') ?></span>
+
+		 <div class="clear"></div>
+
+		 <?php
+
+			$custid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+
+			$query_alert = "SELECT count(*) as tot from grapeoff_alerts where cutomer_id='".$custid."'";
+
+			$res_alert = Mage::getSingleton('core/resource')->getConnection('core_read')->fetchRow($query_alert);
+
+		 ?>
+
+		 <?php
+
+		 $lang= Mage::app()->getStore()->getCode();
+
+		 ?>
+
+		 <?php if($lang=='jap'){ ?>
+
+		   <div class="navgation">
+
+		 <?php }else{ ?>
+
+		   <div class="navgation new-links">
+
+		 <?php } ?>
+
+            <?php $cart = Mage::getModel('checkout/cart')->getQuote()->getData(); ?>
+
+	     <?php if(Mage::getSingleton('customer/session', array('name'=>'frontend') )->isLoggedIn()) {
+
+	     $customer = Mage::getSingleton('customer/session')->getCustomer();
+
+	      $id = $customer->getId();
+
+	      $cquery="select typecust from customer_entity where entity_id='".$id."'";
+
+	      $cdata=Mage::getSingleton('core/resource')->getConnection('core_read')->fetchRow($cquery);
+
+	      $ctype=$cdata['typecust'];
+
+	     ?>
+
+	    <ul>
+
+	     <?php if(
+
+Mage::getSingleton('cms/page')->getIdentifier() == 'home'  &&
+
+Mage::app()->getFrontController()->getRequest()->getRouteName() == 'cms'
+
+) { ?>
+
+
+
+<?php } else {
+
+/*if($ctype!=1)*/
+if($ctype)
+
+{
+
+?>
+
+ <li><a href="<?php echo Mage::helper('checkout/cart')->getCartUrl(); ?>">My Cart<?php if(isset($cart['items_qty'])){
+
+echo "<span id='topcartqty'>(".(int)$cart['items_qty'].")</span>";
+
+}  ?></a></li>
+
+<?php } } ?>
+
+	     <?php if($res_alert['tot']>0) { ?>
+
+	    <li style="border-right:none;"><a href="<?php echo $this->getUrl('editalert'); ?>">Manage Alerts</a></li>
+
+	    <?php } else { ?>
+
+	    <!--<li style="border-right:none;"><a href="<?php echo $this->getUrl('alerts'); ?>">Sign up for <span class="a_alert">A</span>lerts</a></li>-->
+	    <li style="border-right:none;"><a href="<?php echo $this->getUrl('newsletter/manage'); ?>"><span class="a_alert">M</span>y alerts</a></li>
+
+	    <?php } ?>
+
+	    </ul>
+
+	     <?php } else { ?>
+
+		 <ul><!--<li style="border-right:none;"><a class="group1" href="http://www.grapeoff.com/alert.php">Sign up for alerts</a></li>-->
+                 <li style="border-right:none;"><a class="group1" href="<?php echo 'http://www.grapeoff.com/alert-subscribe.php'; ?>">Sign up for alerts</a></li>
+
+                 </ul>
+
+	     <?php } ?>
+
+            <?php echo $this->getChildHtml('topLinks') ?>
+
+	    </div>
+
+	      </div>
+
+    </div>
+
+
+
+        <!-- <div class="quick-access">
+
+            <?php //echo $this->getChildHtml('topSearch') ?>
+
+            <p class="welcome-msg"><?php //echo $this->getWelcome() ?> <?php //echo $this->getAdditionalHtml() ?></p>
+
+
+
+            <?php echo $this->getChildHtml('store_language') ?>
+
+        </div>
+
+        <?php //echo $this->getChildHtml('topContainer'); ?>
+
+    </div> -->
+
+</div>
+
+<?php //echo $this->getChildHtml('topMenu') ?>
+
+
+
+<?php if(isset($_REQUEST['msg']) && $_REQUEST['msg']=='success'){ ?>
+
+<ul class="messages"style="padding:5px;border:1px solid #699542;margin-top: 19px;margin-left: 12px;  width: 600px;" ><li class="success-msg"><ul><li><span>Your inquiry was submitted and will be responded to as soon as possible. Thank you for contacting us..</span></li></ul></li></ul>
+
+<?php } ?>
+
+
+
+<?php
+
+if(isset($_REQUEST['sub_share']))
+
+{
+
+	//echo "first name=".$_REQUEST['fname']; die();
+
+	//die('enter here!');
+
+
+
+	$connection = Mage::getSingleton('core/resource')
+
+	->getConnection('core_write');
+
+	$connection->beginTransaction();
+
+	$custid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+
+	$custmail=Mage::getSingleton('customer/session')->getCustomer()->getEmail();
+
+	$fields = array();
+
+	$fields['friend_email']=$_REQUEST['femail'];
+
+	$fields['note']=$_REQUEST['txtsnote'];
+
+	$fields['customer_id']=$custid;
+
+	$connection->insert('share_to_friends', $fields);
+
+	$connection->commit();
+
+
+
+	$to=$_REQUEST['femail'];
+
+	$sub='A great value wine has been shared with you';
+
+	$siteurl=$this->getUrl();
+
+	//$msg='Hi,Thought I would share this good value wine site with you,'. "\r\n";
+	$msg='Hi, I found this site the sells great value wines online that I thought you would like to subscribe to,'. "\r\n";
+        
+	//$msg.='Site Url: '.$siteurl. "\r\n";
+	$msg.=''.$_SERVER['SERVER_NAME']. "\r\n";
+
+	$headers = 'MIME-Version: 1.0' . "\r\n";
+
+	$headers.= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
+	$headers .= 'From: '.$custmail."\r\n";
+
+	mail($to,$sub,$msg,$headers);
+
+	$url = $this->getUrl('customer/account');
+
+	Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+
+}
+
+?>
+

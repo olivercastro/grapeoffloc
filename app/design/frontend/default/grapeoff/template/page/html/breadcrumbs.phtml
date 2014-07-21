@@ -1,0 +1,175 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php if($crumbs && is_array($crumbs)): ?>
+<div class="breadcrumbs">
+    <ul>
+        <?php foreach($crumbs as $_crumbName=>$_crumbInfo): ?>
+            <li class="<?php echo $_crumbName ?>">
+            <?php if($_crumbInfo['link']): ?>
+                <a href="<?php echo $_crumbInfo['link'] ?>" title="<?php echo $this->htmlEscape($_crumbInfo['title']) ?>"><?php echo $this->htmlEscape($_crumbInfo['label']) ?></a>
+            <?php elseif($_crumbInfo['last']): ?>
+                <strong><?php echo $this->htmlEscape($_crumbInfo['label']) ?></strong>
+            <?php else: ?>
+                <?php echo $this->htmlEscape($_crumbInfo['label']) ?>
+            <?php endif; ?>
+            <?php if(!$_crumbInfo['last']): ?>
+                <span>/ </span>
+            <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+<?php endif; ?>
+<div class="breadcrumbs">
+	<?php //echo Mage::app()->getRequest()->getModuleName(); ?>
+	<?php //echo Mage::getSingleton('cms/page')->getIdentifier() ?>
+	<?php //echo Mage::app()->getFrontController()->getRequest()->getModuleName() ?>
+	<?php $homeURL=Mage::helper('core/url')->getHomeUrl();?>
+	<?php $currentURL=Mage::helper('core/url')->getCurrentUrl (); ?>
+	<?php //echo $homeURL; ?>
+	<?php //echo $currentURL; ?>
+	<?php //echo get_class(Mage::helper('core/url')); ?>
+	<?php if(strpos($currentURL,$homeURL)!==FALSE): ?>
+		<?php //echo substr($currentURL,strlen($homeURL)); ?>
+	<?php else: ?>
+		<?php //echo 'strPOOS'; ?>
+	<?php endif; ?>
+	<p>
+		<?php $controllerName=Mage::app()->getRequest()->getControllerName(); ?>
+		<?php $routeName=Mage::app()->getRequest()->getRouteName(); ?>
+		<?php $actionName=Mage::app()->getRequest()->getActionName(); ?>
+		<?php $step_count=1; ?>
+		<?php //echo $controllerName;?>
+		<?php //echo $routeName;?>
+		<?php //echo $actionName;?>
+		<?php $curl= Mage::helper('core/url')->getCurrentUrl(); ?>
+		<?php //echo Mage::app()->getRequest()->getRequestString (); ?>
+		<?php //if($controllerName==='index'&&$routeName=='cms'&&$actionName==='index'): ?>
+		<?php if($controllerName==='page'): ?>
+			<?php $step_count=1; ?>
+		<?php elseif($controllerName==='cart'): ?>
+			<?php $step_count=2; ?>
+		<?php elseif($controllerName==='account'): ?>
+			<?php $step_count=3; ?>
+		<?php elseif($controllerName==='onepage'): ?>
+			<?php $step_count=4; ?>		
+		<?php endif; ?>
+		<?php $increment=0; ?>
+		<?php $custLoggedIn= Mage::getSingleton("customer/session"); ?>
+		<?php $cartQty=count(Mage::getSingleton("checkout/session")->getQuote()->getAllItems()); ?>
+		<?php //print_r($custLoggedIn); ?>
+		<?php if($controllerName==='page'||$controllerName==='cart'||$controllerName==='onepage'||$controllerName==='account'): ?>
+			<?php //if ((($controllerName!=='account' || $cartQty!==0 ) && $actionName!=='view')||($curl=='http://www.grapeoff.com/index.php/viplink'||$curl=='http://www.grapeoff.com/viplink')): ?>
+			<?php if ((($controllerName!=='account' || $cartQty!==0 ) && $actionName!=='view')||$curl=='http://www.grapeoff.com/index.php/product-fulllist/'): ?>
+				<ul id="todo-shop">
+					<li class="<?php echo $step_count===1 ?  'current' : ($step_count>1 ? 'done':''); ?>">
+						<span>
+							1. <a href="<?php echo  Mage::helper('core/url')->getHomeUrl(); ?>">
+								Make Purchase
+							</a>
+						</span>
+					</li>
+					<li class="<?php echo $step_count===2 ?  'current' : ($step_count>2 ? 'done':''); ?>">
+						<span>
+							2. <a href="<?php echo Mage::helper('checkout/cart')->getCartUrl(); ?>">
+								Purchase Summary
+							</a>
+						</span>
+					</li>
+					<?php if($custLoggedIn->isLoggedIn()===false): ?>
+						<li class="<?php echo $step_count===3 ?  'current' : ($step_count>3 ? 'done':''); ?>">
+							<span>
+								<a href="<?php echo Mage::helper('customer/data')->getRegisterUrl(); ?>">
+									3. Register
+								</a>
+							</span>
+						</li>	
+					<?php $increment=1; ?>
+					<?php endif; ?>
+					<li class="<?php echo $step_count===(3+$increment) ?  'current' : ($step_count>(3+$increment) ? 'done':''); ?>">
+						<span>
+							<?php if($custLoggedIn->isLoggedIn()): ?>
+								<?php echo '3. '; ?>
+							<?php else: ?>
+								<?php echo '4. '; ?>
+							<?php endif; ?>
+							<a href="<?php echo Mage::helper('checkout/url')->getCheckoutUrl(); ?>">
+								Checkout
+							</a>
+						</span>
+					</li>
+				</ul>
+			<?php endif; ?>
+		<?php endif; ?>
+		<?php if(strpos($currentURL,'viplink')):?>
+				<ul id="todo-shop">
+					<li class="<?php echo $step_count===1 ?  'current' : ($step_count>1 ? 'done':''); ?>">
+						<span>
+							1. <a href="<?php echo  Mage::helper('core/url')->getHomeUrl(); ?>">
+								Make Purchase
+							</a>
+						</span>
+					</li>
+					<li class="<?php echo $step_count===2 ?  'current' : ($step_count>2 ? 'done':''); ?>">
+						<span>
+							2. <a href="<?php echo Mage::helper('checkout/cart')->getCartUrl(); ?>">
+								Purchase Summary
+							</a>
+						</span>
+					</li>
+					<?php if($custLoggedIn->isLoggedIn()===false): ?>
+						<li class="<?php echo $step_count===3 ?  'current' : ($step_count>3 ? 'done':''); ?>">
+							<span>
+								<a href="<?php echo Mage::helper('customer/data')->getRegisterUrl(); ?>">
+									3. Register
+								</a>
+							</span>
+						</li>	
+					<?php $increment=1; ?>
+					<?php endif; ?>
+					<li class="<?php echo $step_count===(3+$increment) ?  'current' : ($step_count>(3+$increment) ? 'done':''); ?>">
+						<span>
+							<?php if($custLoggedIn->isLoggedIn()): ?>
+								<?php echo '3. '; ?>
+							<?php else: ?>
+								<?php echo '4. '; ?>
+							<?php endif; ?>
+							<a href="<?php echo Mage::helper('checkout/url')->getCheckoutUrl(); ?>">
+								Checkout
+							</a>
+						</span>
+					</li>
+				</ul>
+		<?php endif; ?>
+		<?php 
+			//echo Mage::app()->getRequest()->getControllerName().'- COntroller<br/>';
+			//echo Mage::app()->getRequest()->getActionName().'-Action <br/>';
+			//echo Mage::app()->getRequest()->getRouteName().'-Route  <br/>';
+			//echo Mage::app()->getRequest()->getModuleName().'-Module <br/>';
+?>
+	</p>
+</div>

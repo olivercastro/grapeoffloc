@@ -1,0 +1,8 @@
+<p>
+<?php echo $this->getMethod()->getTitle() ?><br />
+<?php echo $this->__('Cvs Type: %s', $this->htmlEscape($this->getCvsType($this->getInfo()->getEpsilonCvsCode()))) ?><br />
+<?php echo $this->__('Tran Date: %s', $this->htmlEscape($this->getInfo()->getEpsilonTranDate())) ?><br />
+<?php echo $this->__('Payment Term: %s', $this->htmlEscape($this->getInfo()->getEpsilonPaymnetTerm())) ?><br />
+<?php echo $this->__('Receipt No: %s', $this->htmlEscape($this->getInfo()->getEpsilonReceiptNo())) ?><br />
+<?php echo $this->__('Company Code: %s', $this->htmlEscape($this->getInfo()->getEpsilonCompanyCode())) ?><br />
+</p>

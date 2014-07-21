@@ -1,0 +1,131 @@
+<?php /*?><?php
+if(isset($_REQUEST['sub_share']))
+{
+	//echo "first name=".$_REQUEST['fname']; die();
+	die('enter here!');
+
+	$connection = Mage::getSingleton('core/resource')
+	->getConnection('core_write');
+	$connection->beginTransaction();
+	$custid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+	$custmail=Mage::getSingleton('customer/session')->getCustomer()->getEmail();
+	$fields = array();
+	$fields['friend_email']=$_REQUEST['femail'];
+	$fields['note']=$_REQUEST['txtsnote'];
+	$fields['customer_id']=$custid;
+	$connection->insert('share_to_friends', $fields);
+	$connection->commit();
+
+	$to=$_REQUEST['femail'];
+	$sub='A great value wine has been shared with you';
+	$siteurl=$this->getUrl();
+	$msg='Hi,Thought I would share this good value wine site with you,'. "\r\n";
+	$msg.='Site Url: '.$siteurl. "\r\n";
+	$headers = 'MIME-Version: 1.0' . "\r\n";
+	$headers.= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+	$headers .= 'From: '.$custmail."\r\n";
+	mail($to,$sub,$msg,$headers);
+	$url = $this->getUrl('customer/account');
+	Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+}
+?><?php */
+ if(isset ($_REQUEST['delete_share']))
+ {
+        $url = $this->getUrl('customer/account');
+        $cid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+	$query="delete from share_to_friends where customer_id='".$cid."' and id='".$_REQUEST['delete_share']."'";
+
+	//$frienddata=Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($query);
+
+	$write = Mage::getSingleton('core/resource')->getConnection('core_write');
+	$write->query($query);
+
+	Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+ }
+?>
+<style> .block-subscribe {display: none;}
+</style>
+<div class="alert_text">
+<h2>Share to friends</h2>
+</div>
+<div class="clear">&nbsp;</div>
+<div class="add_productsitem_alert"><form id="frmshare" name="frmshare" action="" method="post">
+
+<label>Friend Email *</label> <input id="femail" name="femail" type="text"/>
+<div class="clear">&nbsp;</div>
+<label>Short Note </label><textarea id="txtsnote" name="txtsnote" rows="4" cols="54">I found this great site the sells great value wines online that I thought you would like to subscribe to.</textarea>
+<div class="clear">&nbsp;</div>
+
+<input id="sub_share" name="sub_share" type="submit" value="Submit" /> </form></div>
+<div class="clear">&nbsp;</div>
+<?php
+	$cid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+	$query="select * from share_to_friends where customer_id='".$cid."'";
+	$frienddata=Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($query);
+?>
+<div class="head_text"><h2>List of friends</h2></div>
+<div class="gridbody">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr class="hdrow">
+    <td class="hdrow_colone hdrow_colone_tdrow">S. No</td>
+    <td class="hdrow_coltwo">Email</td>
+    <td class="hdrow_colone hdrow_colone_tdrow">Detele</td>
+
+  </tr>
+  <?php if(count($frienddata)==0) { ?>
+<tr>
+<td colspan="2" style="text-align:center;">No data found!</td>
+</tr>
+
+  <?php } ?>
+  <?php $i=0; while($i<count($frienddata)) {
+	if($i%2==0)
+	{
+		$class="controw";
+	} else {
+		$class="controw_wh";
+	}
+  ?>
+   <tr class="<?php echo $class; ?>">
+    <td class="controw_colone"><?php echo $i+1; ?></td>
+    <td class="controw_coltwo"><?php echo $frienddata[$i]['friend_email']; ?></td>
+    <td class="controw_coltwo"><a href="http://www.grapeoff.com/index.php/share/?delete_share=<?php echo $frienddata[$i]['id']; ?>">Delete</a></td>
+
+  </tr>
+  <?php $i++; } ?>
+   <!-- <tr class="controw_wh">
+    <td class="controw_colone">City</td>
+    <td class="controw_coltwo">Station</td>
+    <td class="controw_colthree">Affiliate</td>
+    <td class="controw_colfour">Day</td>
+    <td class="controw_colfive">Time</td>
+  </tr> -->
+</table>
+
+<div class="clear"></div>
+</div>
+
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+	jQuery('#sub_share').click(function() {
+	var email=jQuery('#femail').val();
+	var msg='';
+	if(email=='')
+	{
+		msg='Please enter email address';
+		 msg+="\r\n";
+	}
+
+	//alert('final='+msg);
+	if(msg!='')
+	{
+		alert(msg);
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	})
+	});
+</script>

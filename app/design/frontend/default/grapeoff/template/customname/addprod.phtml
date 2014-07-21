@@ -1,0 +1,99 @@
+<?php
+$cust=Mage::getSingleton('customer/session', array('name'=>'frontend'));
+if ($cust->isLoggedIn()) {
+    $cuurentcustid=$cust->getCustomer()->getId();
+    $cuurentcustname=$cust->getCustomer()->getName();
+    $cuurentcustemail=$cust->getCustomer()->getEmail();
+    $query = "SELECT typecust FROM customer_entity WHERE entity_id='".$cuurentcustid."'";
+	$data = Mage::getSingleton('core/resource')->getConnection('core_read')->fetchRow($query);
+} else {
+   $url=$this->getUrl('customer/account/login');
+	echo "<script type='text/javascript'>
+	window.location='$url'
+	</script>";
+   // die();
+}
+$att_botsize=Mage::getModel('eav/config')->getAttribute('catalog_product', '142');
+foreach ( $att_botsize->getSource()->getAllOptions(true, true) as $options){
+$att_botsizeArray[$options['value']] = $options['label'];
+}
+$attribute = Mage::getModel('eav/config')->getAttribute('catalog_product', '129');
+foreach ( $attribute->getSource()->getAllOptions(true, true) as $option){
+$attributeArray[$option['value']] = $option['label'];
+
+
+}
+
+?>
+<?php if(isset($_REQUEST['msg']) && $_REQUEST['msg']!='') { ?>
+<div class="success"><?php echo $_REQUEST['msg']; ?></div>
+<?php } ?>
+<div class="add_productsitem"><form id="frmadd" action="<?php echo Mage::getBaseUrl (Mage_Core_Model_Store::URL_TYPE_WEB); ?>addprod.php" method="post" enctype="multipart/form-data">
+<label>Product Name *</label>
+<input id="txtpname" name="txtpname" type="text" class="required-entry"/>
+
+<div class="clear">&nbsp;</div>
+<label>Short Description *</label>
+<textarea  class="required-entry" id="txtpshort" name="txtpshort" cols="71" rows="8"></textarea>
+<div class="clear">&nbsp;</div>
+<label>Image </label>
+<input id="image_pro" name="image_pro" type="file" />
+<div style="color:#FF0000;" id="advice-required-entry-txtfile"></div>
+<div class="clear">&nbsp;</div>
+<label>Full Description *</label>
+<textarea  class="required-entry" id="txtpfull" name="txtpfull" cols="71" rows="8"></textarea>
+<div class="clear">&nbsp;</div>
+<!-- <label>Weight </label> <input id="txtwt" name="txtwt" type="text" />
+<div class="clear">&nbsp;</div> -->
+<label>Status *</label> <select id="sl_status" name="sl_status"><option value="1">Enable</option><option value="2">Disable</option></select>
+<div class="clear">&nbsp;</div>
+
+<label>Type of Wine *</label>
+ <select class=" select" name="product_type" id="product_type" class="validate-select required-entry">
+<?php foreach($attributeArray as $key=>$value){?>
+<?php if($key){ ?>
+<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+<?php } ?>
+ <?php } ?>
+</select>
+<div class="clear">&nbsp;</div>
+<label>Bottle Size </label>
+ <select class=" select" name="bottle_size" id="bottle_size" class="validate-select">
+ <option value=""></option>
+<?php foreach($att_botsizeArray as $key=>$value){?>
+<?php if($key){ ?>
+<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+<?php } ?>
+ <?php } ?>
+</select>
+<div class="clear">&nbsp;</div>
+<label>Suggested Retail Price *</label> <input id="txtprice" name="txtprice" type="text" class="required-entry validate-number" maxlength="10" />
+<div class="clear">&nbsp;</div>
+<label>Grape Off Price </label> <input id="txtspprice" name="txtspprice" type="text" class="validate-number" maxlength="10"/>
+<div class="clear">&nbsp;</div>
+<label>Number of Bottles *</label> <input id="txtqty" name="txtqty" type="text" class="required-entry validate-number" />
+<div class="clear">&nbsp;</div>
+<label>Stock Availability *</label> <select id="stk_ava" name="stk_ava"><option value="1">In Stock</option><option value="0">Out of stock</option></select>
+<div class="clear">&nbsp;</div>
+<input type="hidden" id="currentcid" name="currentcid" value="<?php echo $cuurentcustid; ?>"/>
+<input type="hidden" id="currentctype" name="currentctype" value="<?php if($data['typecust']==1) { echo $cuurentcustname." (".$cuurentcustemail.")"; } else { echo "Admin"; } ?>"/>
+<input id="sub_prod" name="sub_prod" type="submit" value="Add Product" onclick="return validate();"/> </form></div>
+ <script type="text/javascript">
+  var productAddToCartForm = new VarienForm('frmadd');
+    </script>
+    <script type="text/javascript">
+	function validate() {
+    var filename=document.getElementById('image_pro').value;
+    var extension=filename.substr(filename.lastIndexOf('.')+1).toLowerCase();
+    //alert(extension);
+    if(extension=='jpg' || extension=='jpeg' || extension=='pjpeg' || extension=='gif' || extension=='png' || filename=='') {
+    document.getElementById('advice-required-entry-txtfile').innerHTML="";
+        return true;
+    } else {
+       // alert('Not Allowed Extension!');
+	document.getElementById('advice-required-entry-txtfile').innerHTML="Not Allowed Extension!";
+	document.getElementById('image_pro').focus();
+        return false;
+    }
+}
+    </script>

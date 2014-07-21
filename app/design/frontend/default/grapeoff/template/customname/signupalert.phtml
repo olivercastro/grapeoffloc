@@ -1,0 +1,173 @@
+<?php
+if(isset($_REQUEST['sub_prodalert']))
+{
+
+$arr_type=array('All types','Red wine','White wine','Rose','Champagne');
+$arr_price=array('All types','wines less than &yen; 2, 500/Grape Off wines','wines more than &yen; 2, 500/Grape Off wines');
+	$url=$this->getUrl(); 
+	$connection = Mage::getSingleton('core/resource')
+	->getConnection('core_write');
+	$connection->beginTransaction();
+	$sturl=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+	 $custid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+	$fields = array();
+	$fields['fname']= $_REQUEST['fname'];
+	$fields['lname']= $_REQUEST['lname'];
+	$fields['email']= $_REQUEST['email'];
+	$fields['password']= md5($_REQUEST['pass']);
+	$fields['option_alert']= $_REQUEST['wineoption_type'];
+	$fields['option_alert_price']= $_REQUEST['wineoption_price'];
+	$fields['cutomer_id']=$custid;
+	$fields['status']='1';
+	$connection->insert('grapeoff_alerts', $fields);
+	$connection->commit();
+	//$sturl=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+	$to='sushil.synsoft@gmail.com';
+	$sub='Signup for alerts via Grapeoff wine bar';
+	$msg='A user want to signup for the grapeoff alerts with the following information,'. "\r\n";
+	$msg.='Name: '.$_REQUEST['fname']." ".$_REQUEST['lname']. "\r\n";
+	$msg.='Email: '.$_REQUEST['email']. "\r\n";
+	$msg.='Option alert Type: '.$arr_type[$_REQUEST['wineoption_type']]. "\r\n";
+	$msg.='Option alert Price: '.$arr_price[$_REQUEST['wineoption_price']]. "\r\n";
+	$headers = 'MIME-Version: 1.0' . "\r\n";
+	$headers.= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+	$headers .= 'From: '.$_REQUEST['email']."\r\n";
+	mail($to,$sub,$msg,$headers);
+	$url = $this->getUrl('customer/account');
+	Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+}
+?>
+<?php
+ $cust_info=Mage::getSingleton('customer/session')->getCustomer()->getName();
+ $cust_email=Mage::getSingleton('customer/session')->getCustomer()->getEmail();
+ $cust_pass=Mage::getSingleton('customer/session')->getCustomer()->getPassword();
+  $cust_fname=Mage::getSingleton('customer/session')->getCustomer()->getFirstname();
+   $cust_lname=Mage::getSingleton('customer/session')->getCustomer()->getLastname();
+ $exname=explode(" ",$cust_info);
+?>
+<script>
+//    function wineoption_price(id)
+//    {
+//        //var a = $("input").prop("wineoption_price").is().checked();
+//        alert("a");
+//    }
+</script>
+<div class="alert_text">
+<h2>Sign up for alert</h2>
+</div>
+<div class="clear">&nbsp;</div>
+<div class="add_productsitem_alert"><form id="frmadd" action="" method="post">
+ <input id="fname" name="fname" type="hidden" value="<?php echo $cust_fname; ?>"/>
+<input id="lname" name="lname" type="hidden" value="<?php echo $cust_lname; ?>"/>
+<label>Email for alerts *</label> <input id="email" name="email" type="text" value="<?php echo $cust_email; ?>"/>
+<div class="clear">&nbsp;</div>
+<label></label><strong>you can add additional email addresses for alerts by inputting these addresses at "Share this alert with a friend"</strong>
+<div class="clear">&nbsp;</div>
+<label>Verify Email *</label> <input id="vemail" name="vemail" type="text" value="<?php echo $cust_email; ?>"/>
+<div class="clear">&nbsp;</div>
+<label>Choose Password *</label> <input id="pass" name="pass" type="text" value="<?php echo $cust_pass; ?>"/>
+<div class="clear">&nbsp;</div>
+
+<label>Send me alerts about</label> 
+
+<label>&nbsp;</label>
+
+<div >
+<div class="wine_lsgp">
+<div style=" width: 150px;">
+<input type="radio" value="1" name="wineoption_type" id="rad_all_type">All
+<div class="clear">&nbsp;</div>
+<input type="radio" value="2" name="wineoption_type" id="rad_red_type">Red wine
+<div class="clear">&nbsp;</div>
+</div>
+<div style="width: 150px;">
+<input type="radio" value="3" name="wineoption_type" id="rad_white_type">White wine
+<div class="clear">&nbsp;</div> 
+<input type="radio" value="4" name="wineoption_type" id="rad_rose_type">Rose
+<div class="clear">&nbsp;</div> 
+</div>
+<div style="width: 150px;">
+<input type="radio" value="5" name="wineoption_type" id="rad_champagne_type">Champagne
+<div class="clear">&nbsp;</div>  
+</div>
+</div>
+
+<div class="clear">&nbsp;</div>
+<label>&nbsp;</label>
+</div>
+
+
+
+<div class="wine_lsgp">
+<div class="wine_lsgp_line"><input type="radio" value="1" name="wineoption_price" id="rad_all_price" checked="checked" onclick="return wineoption_price(any);"><span id="any">Any</span></div>
+<div class="wine_lsgp_line"><input type="radio" value="2" name="wineoption_price" id="rad_less" onclick="return wineoption_price(Wines_l);"><span id="Wines_l">Wines less than &yen;2,500</span></div>
+<div class="wine_lsgp_line"><input type="radio" value="3" name="wineoption_price" id="rad_more" onclick="return wineoption_price(Wines_m);"><span id="Wines_m">Wines more than &yen;2,500</span></div>
+</div>
+<div class="clear">&nbsp;</div>
+
+<input id="sub_prodalert" name="sub_prodalert" type="submit" value="Submit" /> 
+<p class="share_alert"><a class="group1 cboxElement" href="<?php echo $this->getUrl('share'); ?>" style="font-weight: bold; font-size: 14px;color:#FFFFFF;">Share alerts with a friend</a></p>
+</form></div>
+<div class="clear">&nbsp;</div> 
+<div class="alert_btmtext">
+
+<!--<p>" if at anytime you wish to modify your Alert preferences, you can do this by logging in to <a href="<?php echo $this->getUrl('customer/account'); ?>">your account</a> "</p>-->
+</div>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+	jQuery('#sub_prodalert').click(function() { 
+	var fisrstname=jQuery('#fname').val();
+	var lastname=jQuery('#lname').val();
+	var email=jQuery('#email').val();
+	var vemail=jQuery('#vemail').val();
+	var cpass=jQuery('#pass').val();
+	var msg='';
+	if(fisrstname=='')
+	{
+		msg='Please enter first name';
+		 msg+="\r\n";
+	}
+	if(lastname=='')
+	{
+		msg+='Please enter last name';
+		 msg+="\r\n";
+	}
+	if(email=='')
+	{
+		msg+='Please enter email address';
+		 msg+="\r\n";
+	}
+	else 
+	{
+		var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+		if(!emailReg.test(email)){
+			msg+='Please enter valid email address';
+			 msg+="\r\n";
+		}
+	}
+	if(vemail=='')
+	{
+		msg+='Please re-enter your email address';
+		 msg+="\r\n";
+	}
+	else if(vemail!=email)
+	{
+		msg+='your email address is not matched';
+		 msg+="\r\n";
+	}
+	if(cpass=='')
+	{
+		msg+='Please enter password';
+	}
+	if(msg!='')
+	{
+		alert(msg);
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	})
+	});
+</script>

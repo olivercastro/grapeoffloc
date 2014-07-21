@@ -1,0 +1,204 @@
+<?php
+if(isset($_REQUEST['edit_prodalert']))
+{
+	$url=$this->getUrl(); 
+	$connection = Mage::getSingleton('core/resource')
+	->getConnection('core_write');
+	$connection->beginTransaction();
+	$sturl=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+	 $custid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+	$fields = array();
+	$fields['fname']= $_REQUEST['fname'];
+	$fields['lname']= $_REQUEST['lname'];
+	$fields['email']= $_REQUEST['email'];
+	//$fields['password']= md5($_REQUEST['pass']);
+	$fields['option_alert']= $_REQUEST['wineoption_type'];
+	$fields['option_alert_price']= $_REQUEST['wineoption_price'];
+	//$fields['cutomer_id']=$custid;
+	$fields['status']='1';
+	
+	$where = $connection->quoteInto('cutomer_id =?',$custid);
+	$connection->update('grapeoff_alerts', $fields, $where);
+	$connection->commit();
+
+	/*$sturl=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+	$to='sushil.synsoft@gmail.com';
+	$sub='Signup for alerts via Grapeoff wine bar';
+	$msg='A user want to signup for the grapeoff alerts with the following information,'. "\r\n";
+	$msg.='Name: '.$_REQUEST['fname']." ".$_REQUEST['lname']. "\r\n";
+	$msg.='Email: '.$_REQUEST['email']. "\r\n";
+	$headers = 'MIME-Version: 1.0' . "\r\n";
+	$headers.= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+	$headers .= 'From: '.$_REQUEST['email']."\r\n";
+	mail($to,$sub,$msg,$headers);*/
+	$url = $this->getUrl('customer/account');
+	Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+}
+?>
+<?php
+$customerid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+$query_alert_option = "SELECT option_alert,option_alert_price from grapeoff_alerts where cutomer_id='".$customerid."'";
+$res_alert_option = Mage::getSingleton('core/resource')->getConnection('core_read')->fetchRow($query_alert_option);
+$option=$res_alert_option['option_alert'];
+$option_price=$res_alert_option['option_alert_price'];
+
+ $cust_info=Mage::getSingleton('customer/session')->getCustomer()->getName();
+ $cust_email=Mage::getSingleton('customer/session')->getCustomer()->getEmail();
+ $exname=explode(" ",$cust_info);
+?>
+<div class="alert_text">
+<h2>Edit alert preferences</h2>
+</div>
+<div class="clear">&nbsp;</div>
+<div class="add_productsitem_alert"><form id="frmadd" action="" method="post">
+ <input id="fname" name="fname" type="hidden" value="<?php echo $exname[0]; ?>"/>
+ <input id="lname" name="lname" type="hidden" value="<?php echo $exname[1]; ?>"/>
+<label>Email for alerts *</label> <input id="email" name="email" type="text" value="<?php echo $cust_email; ?>"/>
+<div class="clear">&nbsp;</div>
+<label></label><strong>you can add additional email addresses for alerts by inputting these addresses at "Share this alert with a friend"</strong>
+<div class="clear">&nbsp;</div>
+<!--<label>Verify Email *</label> <input id="vemail" name="vemail" type="text"/>
+<div class="clear">&nbsp;</div>
+ <label>Choose Password *</label> <input id="pass" name="pass" type="text"/>
+<div class="clear">&nbsp;</div> -->
+<label>Send me alerts about</label> 
+<div class="clear">&nbsp;</div>
+<label>&nbsp;</label> 
+<div class="wine_lsgp">
+<div style="float: left; width: 150px;">
+<input type="radio" value="1" name="wineoption_type" id="rad_all_type" <?php if($option==1) {echo "checked"; } ?>/>All
+<div class="clear">&nbsp;</div>
+<input type="radio" value="2" name="wineoption_type" id="rad_red_type" <?php if($option==2) {echo "checked"; } ?>/>Red
+<div class="clear">&nbsp;</div>
+</div>
+<div style="float: left; width: 150px;">
+<input type="radio" value="3" name="wineoption_type" id="rad_white_type" <?php if($option==3) {echo "checked"; } ?>/>White
+<div class="clear">&nbsp;</div> 
+<input type="radio" value="4" name="wineoption_type" id="rad_rose_type" <?php if($option==4) {echo "checked"; } ?>/>Rose
+<div class="clear">&nbsp;</div> 
+</div>
+<div style="float: left; width: 150px;">
+<input type="radio" value="5" name="wineoption_type" id="rad_champagne_type" <?php if($option==5) {echo "checked"; } ?>/>Bubbles
+<div class="clear">&nbsp;</div>
+</div>
+</div>
+<div class="clear">&nbsp;</div>
+<label>&nbsp;</label> 
+<div class="wine_lsgp">
+<input id="rad_all" name="wineoption_price" type="radio" value="1" <?php if($option_price==1) {echo "checked"; } ?>/>&nbsp;Any
+<div class="clear">&nbsp;</div>
+<label> </label><input id="rad_less" name="wineoption_price" type="radio" value="2" <?php if($option_price==2) {echo "checked"; } ?>/>&nbsp;Wines less than &yen; 2, 500/Grape Off wines
+<div class="clear">&nbsp;</div>
+<label></label><input id="rad_more" name="wineoption_price" type="radio" value="3" <?php if($option_price==3) {echo "checked"; } ?>/>&nbsp;Wines more than &yen; 2, 500/Grape Off wines 
+<div class="clear">&nbsp;</div> 
+</div>
+
+<input id="edit_prodalert" name="edit_prodalert" type="submit" value="Submit" /> 
+<p class="share_alert"><a class="group1 cboxElement" href="<?php echo $this->getUrl('share'); ?>" style="font-weight: bold; font-size: 14px;color:#FFFFFF;">Share this alter with a friend</a></p>
+</form>
+
+</div>
+<div class="clear">&nbsp;</div> 
+<div class="alert_btmtext">
+
+<!--<p>" if at anytime you wish to modify your Alert preferences, you can do this by logging in to <a href="<?php echo $this->getUrl('customer/account'); ?>">your account</a> "</p>--></div>
+<?php
+	$cid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+	$query="select * from share_to_friends where customer_id='".$cid."'";
+	$frienddata=Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($query);
+?>
+<div class="head_text"><h2>You have shared your alerts with</h2></div>
+<div class="gridbody" style="width:auto!important">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr class="hdrow">
+    <td class="hdrow_colone">S. No</td>
+    <td class="hdrow_coltwo">Email</td>
+  </tr>
+  <?php if(count($frienddata)==0) { ?>
+<tr>
+<td colspan="2" style="text-align:center;">No data found!</td>
+</tr>
+
+  <?php } ?>
+  <?php $i=0; while($i<count($frienddata)) { 
+	if($i%2==0)
+	{
+		$class="controw";
+	} else {
+		$class="controw_wh";
+	}
+  ?>
+   <tr class="<?php echo $class; ?>">
+    <td class="controw_colone"><?php echo $i+1; ?></td>
+    <td class="controw_coltwo"><?php echo $frienddata[$i]['friend_email']; ?></td>
+  </tr>
+  <?php $i++; } ?>
+   <!-- <tr class="controw_wh">
+    <td class="controw_colone">City</td>
+    <td class="controw_coltwo">Station</td>
+    <td class="controw_colthree">Affiliate</td>
+    <td class="controw_colfour">Day</td>
+    <td class="controw_colfive">Time</td>
+  </tr> -->
+</table>
+ 
+<div class="clear"></div>
+</div>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+	jQuery('#sub_prodalert').click(function() { 
+	var fisrstname=jQuery('#fname').val();
+	var lastname=jQuery('#lname').val();
+	var email=jQuery('#email').val();
+	var vemail=jQuery('#vemail').val();
+	var cpass=jQuery('#pass').val();
+	var msg='';
+	if(fisrstname=='')
+	{
+		msg='Please enter first name';
+		 msg+="\r\n";
+	}
+	if(lastname=='')
+	{
+		msg+='Please enter last name';
+		 msg+="\r\n";
+	}
+	if(email=='')
+	{
+		msg+='Please enter email address';
+		 msg+="\r\n";
+	}
+	else 
+	{
+		var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+		if(!emailReg.test(email)){
+			msg+='Please enter valid email address';
+			 msg+="\r\n";
+		}
+	}
+	if(vemail=='')
+	{
+		msg+='Please re-enter your email address';
+		 msg+="\r\n";
+	}
+	else if(vemail!=email)
+	{
+		msg+='your email address is not matched';
+		 msg+="\r\n";
+	}
+	if(cpass=='')
+	{
+		msg+='Please enter password';
+	}
+	if(msg!='')
+	{
+		alert(msg);
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	})
+	});
+</script>

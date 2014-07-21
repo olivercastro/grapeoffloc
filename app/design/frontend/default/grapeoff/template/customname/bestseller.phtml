@@ -1,0 +1,313 @@
+<?php
+$session=Mage::getSingleton('customer/session', array('name'=>'frontend') );
+if ($session->isLoggedIn()) {
+
+    $logged=$session->getCustomer()->getId();
+
+
+
+	$_productCollection = Mage::getModel('catalog/product')->getCollection()
+
+   ->addAttributeToSelect('*')
+
+   ->addAttributeToFilter('sku', array('like' => $logged."_%"))
+
+    ->load();
+
+    //print_r($_productCollection); die();
+
+$visibility     = array(
+
+                      Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH,
+
+                      Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_CATALOG
+
+                  );
+
+
+
+$storeId    = Mage::app()->getStore()->getId();
+
+
+
+$_featcategory = Mage::getModel('catalog/category')->load(68);
+
+ //replace 68 with the id of your featured category
+
+/*$_productCollection = Mage::getResourceModel('catalog/product_collection')
+
+                        ->addAttributeToSelect('*')
+
+    			->addAttributeToFilter('visibility', $visibility)
+
+
+
+		        ->setStoreId($storeId)
+
+                        ->addStoreFilter($storeId)
+
+    		        ->addCategoryFilter($_featcategory) //feature category to list first
+
+			->setPageSize(12);*/	// number of products to list per page view
+
+?>
+
+<?php
+
+   //$_productCollection=$this->getLoadedProductCollection();
+
+    $_helper = $this->helper('catalog/output');
+
+?>
+
+<?php if(!$_productCollection->count()): ?>
+
+<p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p>
+
+<?php else: ?>
+
+<div class="category-products">
+
+<?php if(isset($_REQUEST['msg'])) { ?>
+
+<span style="margin-bottom: 20px; float: right; color: rgb(105, 149, 66);"><h3><?php echo $_REQUEST['msg']; ?></h3></span>
+
+<?php } ?>
+
+	<div class="prod_name"><h2>List of products</h2></div>
+
+	<?php if(!isset($_REQUEST['msg'])) { ?>
+
+	<div style="float:right;color: #7F7F7F;"><input type="radio" id="phistory" name="phistory" value="1"/> Recycle information</div>
+
+	<?php } ?>
+
+	<div class="clear"></div>
+
+    <?php //echo $this->getToolbarHtml() ?>
+
+    <?php // List mode ?>
+
+    <?php if($this->getMode()!='grid'): ?>
+
+    <?php $_iterator = 0; ?>
+
+    <ol class="products-list" id="products-list">
+
+    <?php foreach ($_productCollection as $_product): ?>
+
+        <li class="item<?php if( ++$_iterator == sizeof($_productCollection) ): ?> last<?php endif; ?>">
+
+	<div class="phistory_div"><input type="checkbox" id="pcheck_<?php echo $_product->getId(); ?>" name="pcheck" value="<?php echo $_product->getId(); ?>" class="class_check" disabled/></div>
+
+            <?php // Product Image ?>
+
+	    <?php
+
+		if($_product['thumbnail']=='')
+
+		{
+
+	    $get_imgname="select value from catalog_product_entity_media_gallery where entity_id='".$_product->getId()."'";
+
+	    $data_img=Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($get_imgname);
+
+	    //echo $data_img[0]['value'];
+
+	    ?>
+
+
+
+            <a href="<?php echo $this->getUrl('editproduct')."?pid=".$_product->getId() ?>" title="<?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?>"><img src="<?php echo Mage::getBaseUrl (Mage_Core_Model_Store::URL_TYPE_WEB); ?>media/catalog/product<?php echo $data_img[0]['value']; ?>" width="135" alt="<?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?>" /></a>
+
+	    <?php } else { ?>
+
+	   <a href="<?php echo $this->getUrl('editproduct')."?pid=".$_product->getId() ?>" title="<?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'image')->resize(265); ?>" width="135" height="135" alt="<?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?>" /></a>
+
+
+
+	    <?php } ?>
+
+            <?php // Product description ?>
+
+            <div class="product-shop">
+
+                <div class="f-fix">
+
+                    <?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
+
+                    <h2 class="product-name"><a href="<?php echo $this->getUrl('editproduct')."?pid=".$_product->getId() ?>" title="<?php echo $_productNameStripped; ?>"><?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a></h2>
+
+                     <h2 class="product-name">Product Type:<?php echo $_product->getResource()->getAttribute('product_type')->getFrontend()->getValue($_product) ?></h2>
+
+				</div>
+
+            </div>
+
+	    <div class="editprod"><a href="<?php echo $this->getUrl('editproduct')."?pid=".$_product->getId() ?>" title="<?php echo $_productNameStripped; ?>">Edit</a></div><br/><br/>
+
+	    <div class="editprod p_preview"><a href="<?php echo $_product->getProductUrl() ?>"" title="<?php echo $_productNameStripped; ?>">Preview</a></div>
+
+        </li>
+
+    <?php endforeach; ?>
+
+    </ol>
+
+    <script type="text/javascript">decorateList('products-list', 'none-recursive')</script>
+
+
+
+    <?php else: ?>
+
+
+
+    <?php // Grid Mode ?>
+
+
+
+    <?php $_collectionSize = $_productCollection->count() ?>
+
+    <?php $_columnCount = $this->getColumnCount(); ?>
+
+    <?php $i=0; foreach ($_productCollection as $_product): ?>
+
+        <?php if ($i++%$_columnCount==0): ?>
+
+        <ul class="products-grid">
+
+        <?php endif ?>
+
+            <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>">
+
+                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(135); ?>" width="135" height="135" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+
+                <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+
+                <?php if($_product->getRatingSummary()): ?>
+
+                <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+
+                <?php endif; ?>
+
+                <?php echo $this->getPriceHtml($_product, true) ?>
+
+                <div class="actions">
+
+                    <?php if($_product->isSaleable()): ?>
+
+                        <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+
+                    <?php else: ?>
+
+                        <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+
+                    <?php endif; ?>
+
+                    <ul class="add-to-links">
+
+                        <?php if ($this->helper('wishlist')->isAllow()) : ?>
+
+                            <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+
+                        <?php endif; ?>
+
+                        <?php if($_compareUrl=$this->getAddToCompareUrl($_product)): ?>
+
+                            <li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
+
+                        <?php endif; ?>
+
+                    </ul>
+
+                </div>
+
+            </li>
+
+        <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+
+        </ul>
+
+        <?php endif ?>
+
+        <?php endforeach ?>
+
+        <script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+
+    <?php endif; ?>
+
+
+
+    <div class="toolbar-bottom">
+
+        <?php //echo $this->getToolbarHtml() ?>
+
+    </div>
+
+</div>
+
+<?php endif;
+
+} else {
+
+$url=$this->getUrl("customer/account/login");
+
+echo "<script type='text/javascript'>
+
+	window.location='$url'
+
+	</script>";
+
+
+
+}
+
+?>
+
+<script type="text/javascript">
+
+	jQuery(document).ready(function() {
+
+		jQuery('#phistory').click(function() {
+
+		//alert('tets1');class_check
+
+		if (this.checked) {
+
+		    jQuery("input.class_check").removeAttr("disabled");
+
+		  } else {
+
+		    jQuery("input.class_check").attr("disabled", true);
+
+		  }
+
+			//jQuery('#phistory_div').css('display','block');
+
+		});
+
+		jQuery('.phistory_div input[type=checkbox]').click(function() {
+
+		//alert('tets1');
+
+		var selected = this.id.split("_");
+
+		sort_no = selected[1];
+
+		//alert(sort_no);
+
+			var pval=jQuery('#pcheck').val();
+
+			//alert(pval);
+
+			 window.location = '<?php echo Mage::getBaseUrl (Mage_Core_Model_Store::URL_TYPE_WEB); ?>index.php/editproduct/?pid='+sort_no;
+
+		});
+
+
+
+
+
+	});
+
+</script>

@@ -1,0 +1,56 @@
+<fieldset class="form-list">
+    <?php $_code=$this->getMethodCode() ?>
+    <ul id="payment_form_<?php echo $_code ?>" style="display:none">
+        <li>
+            <?php echo $this->__('Move to Epsilon Site at the last Checkout step.') ?>
+        </li>
+        <?php if($this->isSaveCcEpsilon() and $this->isUseSaveCcEpsilon()) { ?>
+        <li>
+            <div class="input-box">
+                <label for="<?php echo $_code ?>_use_save_cc_epsilon_param"><?php echo $this->__('Use saved Credit Card Number on Epsilon') ?> <span class="required">*</span></label><br/>
+                <select id="<?php echo $_code ?>_use_save_cc_epsilon_param" style="width:240px;" name="payment[use_save_cc_epsilon_param]" class="required-entry" onChange="setCreditCardFormEpsilon(this.options[this.selectedIndex].value);">
+                 <?php foreach ($this->getUseSaveCcEpsilonParams() as $k=>$v): ?>
+                    <option value="<?php echo $k?$k:'' ?>"><?php echo $v ?></option>
+                <?php endforeach ?>
+                </select>
+            </div>
+        </li>
+        <li>
+            <div class="input-box">
+                <?php if($this->isContinuousCharge()) { ?>
+                <input type="hidden" title="<?php echo $this->__('Save Credit Card Number into Epsilon') ?>" id="<?php echo $_code ?>_update_cc_epsilon" name="payment[update_cc_epsilon]" value="yes"/>
+                <label for="<?php echo $_code ?>_update_cc_epsilon"><?php echo $this->__('Save Credit Card Number into Epsilon for Continuous Chage') ?></label>
+                <?php } else { ?>
+                <input type="checkbox" title="<?php echo $this->__('Save Credit Card Number into Epsilon') ?>" id="<?php echo $_code ?>_update_cc_epsilon" name="payment[update_cc_epsilon]" value="yes"/>
+                <label for="<?php echo $_code ?>_update_cc_epsilon"><?php echo $this->__('Save Credit Card Number into Epsilon') ?></label>
+                <?php }  ?>
+            </div>
+        </li>
+        <script type="text/javascript">
+        //<![CDATA[
+            //hide not-use-saved-cc on Epsilon
+            $('<?php echo $_code ?>_update_cc_epsilon').up(1).hide();
+            function setCreditCardFormEpsilon(arg){
+                if(arg == 'use'){
+                    $('<?php echo $_code ?>_update_cc_epsilon').up(1).hide();
+                }else{
+                    $('<?php echo $_code ?>_update_cc_epsilon').up(1).show();
+                }
+            }
+        //]]>
+        </script>
+        <?php } else if($this->isSaveCcEpsilon() and $this->isUser() and !$this->isUseSaveCcEpsilon()) { ?>
+        <li>
+            <div class="input-box">
+                <?php if($this->isContinuousCharge()) { ?>
+                <input type="hidden" title="<?php echo $this->__('Save Credit Card Number into Epsilon') ?>" id="<?php echo $_code ?>_save_cc_epsilon" name="payment[save_cc_epsilon]" value="yes"/>
+                <label for="<?php echo $_code ?>_save_cc_epsilon"><?php echo $this->__('Save Credit Card Number into Epsilon for Continuous Chage') ?></label>
+                <?php } else { ?>
+                <input type="checkbox" title="<?php echo $this->__('Save Credit Card Number into Epsilon') ?>" id="<?php echo $_code ?>_save_cc_epsilon" name="payment[save_cc_epsilon]" value="yes"/>
+                <label for="<?php echo $_code ?>_save_cc_epsilon"><?php echo $this->__('Save Credit Card Number into Epsilon') ?></label>
+                <?php }  ?>
+            </div>
+        </li>
+        <?php } ?>
+    </ul>
+</fieldset>

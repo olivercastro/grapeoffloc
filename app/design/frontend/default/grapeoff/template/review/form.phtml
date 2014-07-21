@@ -1,0 +1,314 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php /* ?>
+<style type="text/css">
+    #star ul.star { LIST-STYLE: none; MARGIN: 0; PADDING: 0; WIDTH: 85px; HEIGHT: 20px; LEFT: 10px; TOP: -5px;
+    POSITION: relative; FLOAT: left; BACKGROUND: url('<?php echo $this->getSkinUrl('images/stars.png'); ?>') repeat-x; CURSOR: pointer; }
+    #star li { PADDING: 0; MARGIN: 0; FLOAT: left; DISPLAY: block; WIDTH: 85px; HEIGHT: 20px; TEXT-DECORATION:
+    none; text-indent: -9000px; Z-INDEX: 20; POSITION: absolute; PADDING: 0; }
+    #star li.curr { BACKGROUND: url('<?php echo $this->getSkinUrl('images/stars.png'); ?>') left 25px; FONT-SIZE: 1px; }
+    #star div.user { LEFT: 15px; POSITION: relative; FLOAT: left; FONT-SIZE: 13px; FONT-FAMILY: Arial; COLOR:#888; }
+</style>
+<script type="text/javascript">
+
+    /* AJAX Star Rating : v1.0.3 : 2008/05/06 */
+    /* http://www.nofunc.com/AJAX_Star_Rating/ *-/
+
+    function jQuery(v,o) { return((typeof(o)=='object'?o:document).getElementById(v)); }
+    function jQueryS(o) { return((typeof(o)=='object'?o:jQuery(o)).style); }
+    function agent(v) { return(Math.max(navigator.userAgent.toLowerCase().indexOf(v),0)); }
+    function abPos(o) { var o=(typeof(o)=='object'?o:jQuery(o)), z={X:0,Y:0}; while(o!=null) { z.X+=o.offsetLeft; z.Y+=o.offsetTop; o=o.offsetParent; }; return(z); }
+    function XY(e,v) { var o=agent('msie')?{'X':event.clientX+document.body.scrollLeft,'Y':event.clientY+document.body.scrollTop}:{'X':e.pageX,'Y':e.pageY};  return(v?o[v]:o); }
+
+    star={};
+
+    star.mouse=function(e,o) { if(star.stop || isNaN(star.stop)) { star.stop=0;
+
+            document.onmousemove=function(e) { var n=star.num;
+
+                    var p=abPos(jQuery('star'+n)), x=XY(e), oX=x.X-p.X, oY=x.Y-p.Y; star.num=o.id.substr(4);
+
+                    if(oX<1 || oX>84 || oY<0 || oY>19) { star.stop=1; star.revert(); }
+
+                    else {
+
+                            jQueryS('starCur'+n).width=oX+'px';
+                            jQueryS('starUser'+n).color='#111';
+                            //$('starUser'+n).innerHTML=(Math.round(oX/84*100))/20+'%';
+                            //abc();
+
+                            
+                            jQuery('starUser'+n).innerHTML=(Math.round(oX/84*100))/20;
+                           abc((Math.round(oX/84*100))+15);
+                            //$('#Ratings_1').val(Math.round(oX/84*100));
+                            //var tt = document.getElementById('Ratings_1').value = (Math.round(oX/84*100));
+                    }
+                    
+
+            };
+
+            document.onclick=function(e) { var n=star.num;
+
+                    var p=abPos(jQuery('star'+n)), x=XY(e), oX=x.X-p.X, oY=x.Y-p.Y;
+                    star.num=o.id.substr(4);
+
+                    if(oX<1 || oX>84 || oY<0 || oY>19) { star.stop=1; star.revert(); }
+
+                    else {
+
+                            jQueryS('starCur'+n).width=oX+'px';
+                            jQueryS('starUser'+n).color='#111';
+                            jQuery('starUser'+n).innerHTML=(Math.round(oX/84*100))/20;
+                           //abc((Math.round(oX/84*100))+15);
+                            //$('#Ratings_1').val(Math.round(oX/84*100));
+                            //var tt = document.getElementById('Ratings_1').value = (Math.round(oX/84*100));
+                            
+                    }
+            };
+
+    } };
+
+
+    star.update=function(e,o) { var n=star.num, v=parseInt($('starUser'+n).innerHTML);
+
+            n=o.id.substr(4); jQuery('starCur'+n).title=v;
+
+
+            //req=new XMLHttpRequest(); req.open('GET','/AJAX_Star_Vote.php?vote='+(v/100),false); req.send(null);
+
+    };
+
+    star.revert=function() { var n=star.num, v=parseInt(jQuery('starCur'+n).title);
+
+            //$S('starCur'+n).width=(Math.round(v*84/100))/20+'px';
+            //$('starUser'+n).innerHTML=(v>0?Math.round(v)+'%':'');
+    //	$('starUser'+n).style.color='#888';
+            //  $S('starCur'+n).width='0px';
+            document.onmousemove='';
+            //alert(n);
+
+    };
+
+    star.num=0;
+     */?>
+<script>
+function abc(va){
+    document.getElementById("Ratings_1_1").setAttribute("value", va);
+}
+</script>
+     
+
+
+<div class="form-add">
+    <h2><?php echo $this->__('Write Your Own Review') ?></h2>
+    <?php if ($this->getAllowWriteReviewFlag()): ?>
+    <form action="<?php echo $this->getAction() ?>" method="post" id="review-form">
+        <fieldset>
+            <?php echo $this->getChildHtml('form_fields_before')?>
+            <h3><?php echo $this->__("You're reviewing:"); ?> <span><?php echo $this->htmlEscape($this->getProductInfo()->getName()) ?></span></h3>
+            <?php if( $this->getRatings() && $this->getRatings()->getSize()): ?>
+                <h4><?php echo $this->__('How do you rate this product?') ?> <em class="required">*</em></h4>
+                <span id="input-message-box"></span>
+                <table class="data-table" id="product-review-table">
+                    <col />
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="1" />
+                    <thead>
+                       <!-- <tr>
+                            <th>&nbsp;</th>
+                            <th><span class="nobr"><?php echo $this->__('1 star') ?></span></th>
+                            <th><span class="nobr"><?php echo $this->__('2 stars') ?></span></th>
+                            <th><span class="nobr"><?php echo $this->__('3 stars') ?></span></th>
+                            <th><span class="nobr"><?php echo $this->__('4 stars') ?></span></th>
+                            <th><span class="nobr"><?php echo $this->__('5 stars') ?></span></th>
+                        </tr> -->
+                        <tr>
+                            <th><!--<div id="star">
+                                 <ul id="star0" class="star" onclick="star.update(event,this)" onmousemove="star.mouse(event,this)" title="Rate This!">
+                                      <li id="starCur0" class="curr" title="20" style="width: 0px;"></li>
+                                 </ul>
+                                     <div style="color: rgb(136, 136, 136);" id="starUser0" class="user">0.0</div>
+                                </div>-->
+                                <link href="<?php echo $this->getSkinUrl('css/ratings/rating_bar.css'); ?>" rel="stylesheet" type="text/css" />
+                                <div class="rats_main_div">
+                                   <input name="my_input" value="" id="rating_simple1" type="text" readonly />
+                                </div> 
+                                <script type="text/javascript">
+                                      jQuery.noConflict();
+                                </script>
+                                <!--<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/ratings/jquery-1.3.2.min.js'); ?>" ></script>-->
+                                 <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/ratings/rating_bar.js'); ?>" > </script>
+                                <script type="text/javascript">
+                                      jQuery.noConflict();
+                                </script>
+                                <script language="javascript" type="text/javascript">
+                                    jQuery(function() {
+                                        jQuery("#rating_simple1").webwidget_rating_bar({
+                                            rating_star_length: '5',
+                                            rating_default_value: '0',
+                                            rating_function_name: '',//this is function name for click
+                                            directory: 'http://www.grapeoff.com/skin/frontend/default/default/images/web_widget_star.gif'
+                                        });
+                                    });
+                                </script>
+                               <script type="text/javascript">
+                                      jQuery.noConflict();
+                                </script>
+                            </th>
+                            <!--<th>
+                                <span class="nobr">
+                                    <div class="rating-box">
+                                        <div class="rating" style="width:20%;"></div>
+                                    </div>
+                                </span>
+                            </th>
+
+                            <th>
+                                <span class="nobr">
+                                    <div class="rating-box">
+                                        <div class="rating" style="width:40%;"></div>
+                                    </div>
+                                </span>
+                            </th>
+
+                            <th>
+                                <span class="nobr">
+                                    <div class="rating-box">
+                                        <div class="rating" style="width:60%;"></div>
+                                    </div>
+                                </span>
+                            </th>
+
+                            <th>
+                                <span class="nobr">
+                                    <div class="rating-box">
+                                        <div class="rating" style="width:80%;"></div>
+                                    </div>
+                                </span>
+                            </th>
+
+                            <th>
+                                <span class="nobr">
+                                    <div class="rating-box">
+                                        <div class="rating" style="width:100%;"></div>
+                                    </div>
+                                </span>
+                            </th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php /* foreach ($this->getRatings() as $_rating): ?>
+                        <tr>
+                            <th><?php echo $this->escapeHtml($_rating->getRatingCode()) ?></th>
+                        <?php foreach ($_rating->getOptions() as $_option): ?>
+                            <td class="value"><input type="radio" name="ratings[<?php echo $_rating->getId() ?>]" id="<?php echo $this->escapeHtml($_rating->getRatingCode()) ?>_<?php echo $_option->getValue() ?>" value="<?php echo $_option->getId() ?>" class="radio" /></td>
+                        <?php endforeach; ?>
+                        </tr>
+                    <?php endforeach; */?>
+                    </tbody>
+                </table>
+                <input id="Ratings_1_1" class="radio" type="hidden" value="" name="ratings[4]">
+                <input type="hidden" name="validate_rating" class="validate-rating" value="" />
+                <script type="text/javascript">decorateTable('product-review-table')</script>
+            <?php endif; ?>
+                <ul class="form-list fl_left">
+                    <li>
+                        <label for="nickname_field" class="required"><em>*</em><?php echo $this->__('Nickname') ?></label>
+                        <div class="input-box">
+                            <!--<input type="text" name="nickname" id="nickname_field" class="input-text required-entry" value="<?php echo $this->htmlEscape($data->getNickname()) ?>" />-->
+                            <?php $nickname=Mage::getSingleton('customer/session')->getCustomer()->getNickName();?>
+                            <input type="text" name="nickname" id="nickname_field" class="input-text required-entry"  value="<?php echo $this->htmlEscape($nickname) ?>" readonly />
+                        </div>
+                    </li>
+                    <li>
+                        <label for="summary_field" class="required"><em>*</em><?php echo $this->__('Summary of Your Review') ?></label>
+                        <div class="input-box">
+                            <input type="text" name="title" id="summary_field" class="input-text required-entry" value="<?php echo $this->htmlEscape($data->getTitle()) ?>" />
+                        </div>
+                    </li>
+                    <!--<li>
+                        <label for="review_field" class="required"><em>*</em><?php echo $this->__('Review') ?></label>
+                        <div class="input-box">
+                            <textarea name="detail" id="review_field" cols="5" rows="3" class="required-entry"><?php echo $this->htmlEscape($data->getDetail()) ?></textarea>
+                        </div>
+                    </li>-->
+                </ul>
+                <div class="review_feedback_textarea_div">
+                <label for="review_field" class="required review_feed_tex_label"><?php echo $this->__('Review') ?><em>*</em></label>
+                        <div class="input-box">
+                            <textarea name="detail" id="review_field" cols="5" rows="3" class="required-entry review_feed_textarea"><?php echo $this->htmlEscape($data->getDetail()) ?></textarea>
+                        </div>
+                </div>
+            </fieldset>
+            <div class="buttons-set">
+                <button type="submit" title="<?php echo $this->__('Submit Review') ?>" class="button"><span><span><?php echo $this->__('Submit Review') ?></span></span></button>
+            </div>
+    </form>
+    <script type="text/javascript">
+ //<![CDATA[
+     /*      var dataForm = new VarienForm('review-form');
+      Validation.addAllThese(
+        [
+               ['validate-rating', '<?php echo $this->__('Please select one of each of the ratings above') ?>', function(v) {
+                    var trs = $('product-review-table').select('tr');
+                    var inputs;
+                    var error = 1;
+    
+                    for( var j=0; j < trs.length; j++ ) {
+                        var tr = trs[j];
+                        if( j > 0 ) {
+                            inputs = tr.select('input');
+    
+                            for( i in inputs ) {
+                                if( inputs[i].checked == true ) {
+                                    error = 0;
+                                }
+                            }
+    
+                            if( error == 1 ) {
+                                return false;
+                            } else {
+                                error = 1;
+                            }
+                        }
+                    }
+                    return true;
+                }]
+        ]
+        );*/
+    //]]>
+    </script>
+    <?php else: ?>
+    <p class="review-nologged" id="review-form">
+        <h1 class="review-page-title"><?php echo $this->htmlEscape($this->getProductInfo()->getName()) ?></h1>
+        <?php echo $this->__('Only registered users can write reviews. Please, <a href="%s">log in</a> or <a href="%s">register</a>', $this->getLoginLink(), Mage::helper('customer')->getRegisterUrl()) ?>
+    </p>
+    <?php endif ?>
+</div>

@@ -1,0 +1,86 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+$model = Mage::getModel('catalog/product'); //getting product model
+ 
+$_product = $model->load(1); //getting product object for particular product id
+ 
+/*echo $_product->getShortDescription()."<br>"; //product's short description
+echo $_product->getDescription()."<br>";  // product's long description
+echo $_product->getName()."<br>";  //product name
+echo $_product->getPrice()."<br>";  //product's regular Price
+echo $_product->getSpecialPrice()."<br>";  //product's special Price
+echo $_product->getProductUrl()."<br>";  //product url
+echo $_product->getImageUrl()."<br>";  //product's image url
+echo $_product->getSmallImageUrl()."<br>";  //product's small image url
+echo $_product->getThumbnailUrl()."<br>"; */ //product's thumbnail image url  
+?>
+
+<?php if(isset($_REQUEST['msg'])) { ?>
+<span><?php echo $_REQUEST['msg']; ?></span>
+<?php } ?>
+<div class="container">
+    	<div class="container_left">
+        	<div class="buynow_div">
+		<img src="<?php echo $this->getSkinUrl('images/green_images/common_bottle.jpg'); ?>" alt="" border="0"  />
+            	<div class="price_teg">
+			<img src="<?php echo $this->getSkinUrl('images/green_images/white_bye_now.png'); ?>" alt="" border="0"  />
+		</div>
+            </div>
+            <div class="show_content">
+            	<div class="show_price_div">
+                	<h2><?php echo $_product->getName(); ?></h2>
+                    <div class="retl_disc">
+                    	<ul>
+                        	<li class="left">Retail price</li>
+                            <li class="right"><?php echo number_format($_product->getPrice(),2,'.',''); ?></li>
+                        </ul>
+			<?php $netp=($_product->getPrice() - $_product->getSpecialPrice()); ?>
+                        <ul>
+                        	<li class="left">Discount</li>
+                            <li class="right"><?php echo number_format($netp,2,'.',''); ?></li>
+                        </ul>
+                        <ul class="bot_border">
+                        	<li class="left_a">Grape Off price</li>
+                            <li class="right_a"><?php echo number_format($_product->getSpecialPrice(),2,'.',''); ?></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <div class="show_description_div">
+                	<h2>Interesting Story about the Wine on sale</h2>
+                    <p><?php echo $_product->getShortDescription(); ?></p>
+                    <div class="clear"></div>
+                    <span><a href="">Read More...</a></span>
+                </div>
+            </div>
+        </div>
+        <div class="container_right">
+        	<h2>Stock Remaining</h2>
+            <div class="label_full"></div>
+        </div>
+    </div>

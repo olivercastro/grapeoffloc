@@ -1,0 +1,25 @@
+<?php /* $this Mage_Sales_Model_Order */ ?>
+
+<?php $_order = $this->getOrder() ?>
+<?php //echo get_class($_order); ?>
+<?php //echo get_class($this); ?>
+<?php if($_order->getPayment()->getMethod()=='banktransfer'): ?>
+	<?php //if($_order->getIsNotVirtual()): ?>
+		<?php //echo 'Bank Transfer'; ?>
+	<?php //else: ?>	
+		<?php if(Mage::app()->getStore()->getCode()=='default'):?>
+			<?php echo 'If you haven’t already made your payment, please be kind enough to make your payment to our account below: Grape Off KK, Mizuho Bank, Meguro Branch #194,Normal account 1207770 Grape Off 株式会社　みずほ銀行　　目黒支店　#194 普 1207770 Thank you again for your order.'; ?>
+		<?php else: ?>
+			<?php echo '<p>お振込みがまだの方は、下記にお願い致します。</p>
+                    <p>※お手数ですがお振込み手数料はご負担お願い致します</p>
+                    <p>ありがとうございます。</p>
+					<p>Grape Off 株式会社みずほ銀行目黒支店#194 普通 1207770</p>'; ?>
+		<?php endif; ?>
+	<?php //endif; ?>
+<?php elseif ($_order->getPayment()->getMethod()=='zeus_linkpoint'): ?>
+	<?php echo 'Credit Card (Linkpoint)'; ?>
+<?php elseif ($_order->getPayment()->getMethod()=='cashondelivery'): ?>
+	<?php echo 'Cash on Delivery'; ?>
+<?php else: ?>
+	<?php echo $_order->getPayment()->getMethod(); ?>
+<?php endif;?>

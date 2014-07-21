@@ -1,0 +1,12 @@
+<?php echo($this->__('You will be redirected to payment page in a few seconds.')); ?>
+<?php $_checkout = Mage::getSingleton('checkout/session')->getAuthInfo(); ?>
+<?php Mage::log(var_export($_checkout->toArray(), true)); ?>
+
+<form id="form" method="post" action="<?php //echo $_checkout->getRedirectUrl(); ?>https://linkpt.cardservice.co.jp/cgi-bin/credit/order.cgi" enctype="x-www-form-encoded" target="_top">
+    <input type="hidden" name="clientip" value="<?php echo $_checkout->getClientIp(); ?>"/>
+    <input type="hidden" name="money" value="<?php echo $_checkout->getMoney(); ?>"/>
+    <input type="hidden" name="telno" value="<?php echo $_checkout->getTelno(); ?>"/>
+    <input type="hidden" name="email" value="<?php echo $_checkout->getEmail(); ?>"/>
+    <input type="hidden" name="sendid" value="<?php echo $_checkout->getSendid(); ?>"/>
+</form>
+<script type="text/javascript">document.getElementById("form").submit();</script>
