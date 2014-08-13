@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <grapeinventory_admin_adminhtml_daily_index>
+        <reference name="content">
+            <block type="adminhtml_daily/daily" name="daily" />
+        </reference>
+    </grapeinventory_admin_adminhtml_daily_index>
+</layout>

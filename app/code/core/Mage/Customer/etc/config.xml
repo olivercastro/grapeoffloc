@@ -219,6 +219,7 @@
                     <update>1</update>
                     <name>1</name>
                 </lastname>
+                <nick_name><create>1</create><update>1</update></nick_name>
                 <suffix>
                     <create>1</create>
                     <update>1</update>

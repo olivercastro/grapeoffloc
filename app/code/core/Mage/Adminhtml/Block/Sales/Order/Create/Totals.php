@@ -91,10 +91,12 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Totals extends Mage_Adminhtml_Bloc
     {
         $html = '';
         foreach($this->getTotals() as $total) {
+			
             if ($total->getArea() != $area && $area != -1) {
                 continue;
             }
-            $html .= $this->renderTotal($total, $area, $colspan);
+            $html .= $this->renderTotal($total, $area, $colspan);		
+			
         }
         return $html;
     }

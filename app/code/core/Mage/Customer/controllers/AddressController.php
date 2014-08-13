@@ -99,9 +99,10 @@ class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
 
     public function formPostAction()
     {
-        if (!$this->_validateFormKey()) {
-            return $this->_redirect('*/*/');
-        }
+		
+        //if (!$this->_validateFormKey()) {
+            //return $this->_redirect('*/*/');
+        //}
         // Save data
         if ($this->getRequest()->isPost()) {
             $customer = $this->_getSession()->getCustomer();

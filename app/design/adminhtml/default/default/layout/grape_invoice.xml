@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<layout>
+    <grape_extension_adminhtml_invoice_index>
+        <reference name="content">
+            <block type="grape_extension/adminhtml_customer_list" />
+            <block type="core/template" template="grapeoff/text.phtml"/>
+        </reference>
+    </grape_extension_adminhtml_invoice_index>
+	<grape_extension_adminhtml_invoice_ngrid>
+		<remove name="root"/>
+	
+		<reference name="content">
+			<block 
+				type="grape_extension/adminhtml_customer_list" 
+				output="toHtml"
+				name="grape.extension.grid"
+			/>
+		</reference>
+	</grape_extension_adminhtml_invoice_ngrid>	
+	
+     <grape_extension_adminhtml_invoice_edit>
+		<reference name="content">
+            <block type="grape_extension/adminhtml_invoices_invoice"/>            
+		</reference>
+    </grape_extension_adminhtml_invoice_edit>	
+	<grape_extension_adminhtml_invoice_egrid>
+		<remove name="root"/>	
+		<reference name="content">
+			<block 
+				type="grape_extension/adminhtml_invoices_invoice" 
+				output="toHtml"
+				name="grape.extension.grid"
+			/>
+		</reference>
+	</grape_extension_adminhtml_invoice_egrid>	
+	
+</layout>

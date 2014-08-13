@@ -42,6 +42,8 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
         $this->setDefaultSort('created_at');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
+		
+
     }
 
     /**

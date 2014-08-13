@@ -69,7 +69,7 @@ class Mage_Adminhtml_Block_Widget_Grid extends Mage_Adminhtml_Block_Widget
     protected $_varNameDir      = 'dir';
     protected $_varNameFilter   = 'filter';
 
-    protected $_defaultLimit    = 20;
+    protected $_defaultLimit    = 100;
     protected $_defaultPage     = 1;
     protected $_defaultSort     = false;
     protected $_defaultDir      = 'desc';

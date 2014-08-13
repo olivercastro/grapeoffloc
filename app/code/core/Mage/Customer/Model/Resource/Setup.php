@@ -212,6 +212,13 @@ class Mage_Customer_Model_Resource_Setup extends Mage_Eav_Model_Entity_Setup
                         'validate_rules'     => 'a:2:{s:15:"max_text_length";i:255;s:15:"min_text_length";i:1;}',
                         'position'           => 60,
                     ),
+                    'nick_name'          => array(
+                        'type'               => 'varchar',
+                        'label'              => 'Nickname',
+                        'input'              => 'text',
+                        'sort_order'         => 55,
+                        'position'           => 55,
+                    ),
                     'suffix'             => array(
                         'type'               => 'varchar',
                         'label'              => 'Suffix',

@@ -31,7 +31,7 @@
  */
 class Mage_Core_Model_Translate
 {
-    const CSV_SEPARATOR     = ',';
+    const CSV_SEPARATOR     = ';';
     const SCOPE_SEPARATOR   = '::';
     const CACHE_TAG         = 'translate';
 

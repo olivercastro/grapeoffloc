@@ -286,8 +286,12 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
              * Initialize customer group id
              */
             $customer->getGroupId();
-
+            if ($this->getRequest()->getPost('group_id'))
+            {
+                $customer->setGroupId($this->getRequest()->getPost('group_id'));
+            }
             if ($this->getRequest()->getPost('create_address')) {
+            /*if ($this->getRequest()->getPost('street')) {*/
                 /* @var $address Mage_Customer_Model_Address */
                 $address = Mage::getModel('customer/address');
                 /* @var $addressForm Mage_Customer_Model_Form */
@@ -320,6 +324,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                 } else {
                     $customerForm->compactData($customerData);
                     $customer->setPassword($this->getRequest()->getPost('password'));
+
                     $customer->setConfirmation($this->getRequest()->getPost('confirmation'));
                     $customerErrors = $customer->validate();
                     if (is_array($customerErrors)) {
@@ -330,8 +335,17 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                 $validationResult = count($errors) == 0;
 
                 if (true === $validationResult) {
+                    $customer->setNickName($this->getRequest()->getPost('nick_name'));
                     $customer->save();
-
+					//Mage::log('My log entry', $customer, 'mylogfile.log');
+					/* Calvin */
+					// $email = Mage::getModel('core/email_template');
+					// $email->setSenderEmail('sender@email.com');
+					// $email->setSenderName('Grape Off K.K.');
+					// $email->setTemplateSubject('New custommer');
+					// $email->setTemplateText('New custommer rigister on Grape Off K.K. Online Wine Store');
+					// $email->send('valuewines@grapeoff.com', 'Grape Off K.K.');
+					/* End Calvin */
                     Mage::dispatchEvent('customer_register_success',
                         array('account_controller' => $this, 'customer' => $customer)
                     );
@@ -346,6 +360,44 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                         $this->_redirectSuccess(Mage::getUrl('*/*/index', array('_secure'=>true)));
                         return;
                     } else {
+						//$lId=mysql_insert_id();
+						/*$con = mysql_connect("localhost","grapeoff_grape","syn@123");
+							if (!$con)
+							  {
+							  die('Could not connect: ' . mysql_error());
+							  }
+
+							mysql_select_db("grapeoff_grapeoffEN", $con);
+							$result = mysql_query("SELECT MAX(entity_id) as m from customer_entity");*/
+							$result="SELECT MAX(entity_id) as m from customer_entity";
+							$res=Mage::getSingleton('core/resource')->getConnection('core_read')->fetchRow($result);
+							//$res=mysql_fetch_array($result);
+							//echo "max=".$res['m'];
+							$connection = Mage::getSingleton('core/resource')
+							->getConnection('core_write');
+							$connection->beginTransaction();
+							/*$result = mysql_query("SELECT MAX(entity_id) as m from customer_entity");
+							$res=mysql_fetch_array($result);
+							echo "max=".$res['m']; die();
+							$lastInsertId  = $connection->fetchOne('SELECT MAX(entity_id) from customer_entity');
+							echo "id=".$lastInsertId;*/
+							$fields = array();
+							$fields['typecust'] = $_REQUEST['typecust'];
+							if(isset($_REQUEST['bankname']))
+							{
+								$fields['bank_name'] = $_REQUEST['bankname'];
+								$fields['bank_accno'] = $_REQUEST['bankaccno'];
+								$fields['bank_branch'] = $_REQUEST['bankbranch'];
+								$fields['payee'] = $_REQUEST['bankpayee'];
+								$fields['contact_person'] = $_REQUEST['bankcontactperson'];
+							}
+							$where = $connection->quoteInto('entity_id =?',$res['m']);
+							$connection->update('customer_entity', $fields, $where);
+							$connection->commit();
+
+						/*$db = this->connection();
+						$data = array('typecust' => $request->getParam('typecust'));
+						$db->update('customer_entity', $data,'entity_id = 1'); */
                         $session->setCustomerAsLoggedIn($customer);
                         $url = $this->_welcomeCustomer($customer);
                         $this->_redirectSuccess($url);
@@ -735,13 +787,13 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     public function editPostAction()
     {
         if (!$this->_validateFormKey()) {
-            return $this->_redirect('*/*/edit');
+        //    return $this->_redirect('*/*/edit');
         }
-
+      
         if ($this->getRequest()->isPost()) {
             /** @var $customer Mage_Customer_Model_Customer */
             $customer = $this->_getSession()->getCustomer();
-
+            
             /** @var $customerForm Mage_Customer_Model_Form */
             $customerForm = Mage::getModel('customer/form');
             $customerForm->setFormCode('customer_account_edit')
@@ -804,7 +856,30 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
 
             try {
                 $customer->setConfirmation(null);
+                $customer->setNickName($_REQUEST['nick_name']) ;
+                //$customer->setNickName($this->getRequest()->getParam('nick_name'));
+                //$customer->setNickName($this->getRequest()->getPost('nick_name'));
                 $customer->save();
+                $this->_getSession()->setCustomer($customer)
+                    ->addSuccess($this->__('The account information has been saved.'));
+
+                $this->_redirect('customer/account');
+				$c_id=Mage::getSingleton('customer/session')->getCustomer()->getId();
+
+				$connection = Mage::getSingleton('core/resource')
+							->getConnection('core_write');
+							$connection->beginTransaction();
+							$fields = array();
+							$fields['bank_name'] = $_REQUEST['bankname'];
+							$fields['bank_accno'] = $_REQUEST['bankaccno'];
+							$fields['bank_branch'] = $_REQUEST['bankbranch'];
+							$fields['payee'] = $_REQUEST['bankpayee'];
+							$fields['contact_person'] = $_REQUEST['bankcontactperson'];
+                                                        
+							$where = $connection->quoteInto('entity_id =?',$c_id);
+							$connection->update('customer_entity', $fields, $where);
+							$connection->commit();
+
                 $this->_getSession()->setCustomer($customer)
                     ->addSuccess($this->__('The account information has been saved.'));
 

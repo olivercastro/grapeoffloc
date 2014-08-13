@@ -106,6 +106,7 @@ class Mage_Compiler_Model_Process
     {
         if (is_dir($source)) {
             $dir = dir($source);
+			try{
             while (false !== ($file = $dir->read())) {
                 if (($file[0] == '.')) {
                     continue;
@@ -122,7 +123,8 @@ class Mage_Compiler_Model_Process
                     $targetFile = $target . '_' . $file;
                 }
                 $this->_copy($sourceFile, $targetFile, false);
-            }
+            }}catch(Exception $err){
+			}
         } else {
             if (strpos(str_replace($this->_includeDir, '', $target), '-')
                 || !in_array(substr($source, strlen($source)-4, 4), array('.php'))) {

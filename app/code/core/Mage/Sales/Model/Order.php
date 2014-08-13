@@ -905,6 +905,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!empty($old)) {
             $address->setId($old->getId());
         }
+
         $this->addAddress($address->setAddressType('billing'));
         return $this;
     }
@@ -934,6 +935,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     {
         foreach ($this->getAddressesCollection() as $address) {
             if ($address->getAddressType()=='billing' && !$address->isDeleted()) {
+				
                 return $address;
             }
         }
@@ -949,6 +951,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     {
         foreach ($this->getAddressesCollection() as $address) {
             if ($address->getAddressType()=='shipping' && !$address->isDeleted()) {
+			
                 return $address;
             }
         }
@@ -1414,11 +1417,13 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
 
             if ($this->getId()) {
                 foreach ($this->_addresses as $address) {
+					
                     $address->setOrder($this);
+					
                 }
             }
         }
-
+		
         return $this->_addresses;
     }
 
@@ -1426,6 +1431,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     {
         foreach ($this->getAddressesCollection() as $address) {
             if ($address->getId()==$addressId) {
+			
                 return $address;
             }
         }
@@ -1436,6 +1442,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     {
         $address->setOrder($this)->setParentId($this->getId());
         if (!$address->getId()) {
+			
             $this->getAddressesCollection()->addItem($address);
         }
         return $this;
@@ -2121,6 +2128,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     protected function _afterSave()
     {
         if (null !== $this->_addresses) {
+	
             $this->_addresses->save();
             $billingAddress = $this->getBillingAddress();
             $attributesForSave = array();

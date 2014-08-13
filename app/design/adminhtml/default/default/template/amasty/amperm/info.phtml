@@ -1,0 +1,60 @@
+<form method="post" id="amperm_form" action="<?php echo $this->getSubmitUrl()?>">
+<tr>
+    <td class="label" colspan="2"><textarea style="width:350px;" id="amperm_txt" name="amperm[txt]"></textarea></td>
+</tr>
+<tr>
+    <?php
+        $assignedDealer = $this->getAssignedDealer($this->getOrderId());
+        $currDealer = $this->getCurrentDealer();
+        $dealers = $this->getDealers();
+    ?>
+    <td class="label"><button class="scalable" onclick="$('amperm_form').submit();" type="button">
+        <span><?php echo $this->__('Assign To')?></span></button>
+        <input name="form_key" type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" /> 
+        <input type="hidden" name="amperm[order_id]" value="<?php echo $this->getOrderId() ?>" />
+        <input type="hidden" name="amperm[old_dealer]" value="<?php echo $assignedDealer ?>" />
+    </td>
+    <td class="value"><select name="amperm[new_dealer]"  style="width:150px">
+        <option value="0"><?php echo $this->__('Admin')?></option>
+    	<?php foreach ($dealers as $k => $v) {  ?>
+    	   <option value="<?php echo $k?>" <?php if ($k == $assignedDealer) echo 'selected="true"' ?> ><?php echo $v?></option>
+    	<?php } ?>
+    </select>
+    </td>
+</tr>
+<tr>
+    <td class="label" colspan="2"><ul class="note-list">
+    <?php foreach ($this->getMessages($this->getOrderId()) as $mes){  ?>
+        <li>
+            <strong><?php echo $mes->getCreatedAt() ?></strong>
+            <?php if (Mage::getStoreConfig('amperm/general/from_to') && $mes->getFromId() != $mes->getToId()): ?>
+                <br/>
+                <?php echo $this->__('Assigned From')?>
+                <?php if (isset($dealers[$mes->getFromId()])): ?>
+                    <strong><?php echo ' ' . $dealers[$mes->getFromId()] ?></strong>
+                <?php else: ?>
+                    <strong><?php echo ' ' . $this->__('Admin')?></strong>
+                <?php endif; ?>
+                <?php echo $this->__('To')?>
+                <?php if (isset($dealers[$mes->getToId()])): ?>
+                    <strong><?php echo ' ' . $dealers[$mes->getToId()] ?></strong>
+                <?php else: ?>
+                    <strong><?php echo ' ' . $this->__('Admin')?></strong>
+                <?php endif; ?>
+            <?php endif; ?>
+            <br/>
+            <?php if ($mes->getTxt()): ?>
+                <?php if (Mage::getStoreConfig('amperm/general/author')): ?>
+                    <?php if ($mes->getAuthorId()): ?>
+                        <strong><?php echo $dealers[$mes->getAuthorId()] ?>: </strong>
+                    <?php else: ?>
+                        <strong><?php echo ' ' . $this->__('Admin')?>: </strong>
+                    <?php endif; ?>
+                <?php endif; ?>
+            	<?php echo nl2br($this->escapeHtml($mes->getTxt())) ?>
+        </li>
+            <?php endif; ?>
+    <?php } ?>
+    <ul></td>
+</tr>
+</form>

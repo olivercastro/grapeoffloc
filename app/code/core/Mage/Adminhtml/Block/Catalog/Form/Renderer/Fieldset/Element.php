@@ -160,6 +160,9 @@ class Mage_Adminhtml_Block_Catalog_Form_Renderer_Fieldset_Element
     {
         $element = $this->getElement();
         $label = $element->getLabel();
+		if($label=='Short Description'){
+			$label='Tasting Notes';
+		}
         if (!empty($label)) {
             $element->setLabel($this->__($label));
         }

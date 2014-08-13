@@ -1,0 +1,15 @@
+<?xml version="1.0"?>   
+<layout version="0.1.0">   
+  <simplefilter_index_index>   
+    <reference name="root">   
+      <action method="setTemplate"><template>page/2columns-left.phtml</template></action>   
+    </reference>
+    <reference name="left">   
+      <block type="simplefilter/left" name="simplefilter_left" template="simplefilter/left.phtml"/>   
+    </reference>   
+    <reference name="content">   
+      <block type="simplefilter/index" name="simplefilter_index" template="simplefilter/index.phtml"/>   
+    </reference>   
+  </simplefilter_index_index>   
+</layout>   
+	
